@@ -1,0 +1,45 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="AnaControl.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="DefaultChartType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Column</Value>
+    </Setting>
+    <Setting Name="DefaultDataType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">产能分析</Value>
+    </Setting>
+    <Setting Name="DefaultDateTimeStart" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)">2010-01-01</Value>
+    </Setting>
+    <Setting Name="DefaultDateTimeEnd" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)">02/26/2015 15:30:00</Value>
+    </Setting>
+    <Setting Name="DefaultTestItem" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="DefaultRemoveRepeat" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="DefaultRemovePassData" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="DefaultRemoveExceptFail" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="DefaultShowNum" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="AbnormalLowData" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">-999999</Value>
+    </Setting>
+    <Setting Name="AbnormalUpData" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">999999</Value>
+    </Setting>
+    <Setting Name="ProductType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">%</Value>
+    </Setting>
+    <Setting Name="AutoWildcard" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
