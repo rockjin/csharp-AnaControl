@@ -117,38 +117,35 @@ namespace AnaControl
                 InvokeOnLog("remove repeats\n");
                 sqlCmd += " and test_time in("
                           + " select max(test_time) "
-                          + " from TEST_ITEM_VALUES "
+                          + " from test_results "
                           + "where format(test_time,'yyyy-MM-dd HH:mm:ss')>=\"" +
                           this.dateTimePicker_Start.Value.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
                           + "and format(test_time,'yyyy-MM-dd HH:mm:ss')<=\"" +
                           this.dateTimePicker_End.Value.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
-                          + "and TEST_ITEM_NAME like '" + matchString + "'";
-
+                          + " group by product_sn)";
             }
             if (this.ToolStripMenuItem_RemovePass.Checked)
             {
                 InvokeOnLog("remove pass data\n");
-                sqlCmd += " and product_sn in( "
-                          + "select distinct(product_sn) from test_results "
-                          + "where fail_code <> 0 and test_time in("
-                          + "select max(test_time) from test_results "
-                          + "group by product_sn)) "
+                sqlCmd += " and test_time in( "
+                          + "select test_time from test_results "
+                          + "where fail_code <> 0 "
+                          + ") "
                           + "and pass_state <> 0";
             }
             if (this.ToolStripMenuItem_RemoveFail.Checked)
             {
                 InvokeOnLog("remove fail data\n");
-                sqlCmd += " and product_sn in( "
-                          + "select distinct(product_sn) from test_results "
-                          + "where fail_code = 0 and test_time in("
-                          + "select max(test_time) from test_results "
-                          + "group by product_sn)) "
+                sqlCmd += " and test_time in( "
+                          + "select test_time from test_results "
+                          + "where fail_code = 0 "
+                          + ") "
                           + "and pass_state = 0";
             }
-            if (this.toolStripMenuItem_RemoveRepeats.Checked)
-            {
-                sqlCmd += " group by product_sn)";
-            }
+            //if (this.toolStripMenuItem_RemoveRepeats.Checked)
+            //{
+            //    sqlCmd += " group by product_sn)";
+            //}
             if(this.去除异常数据ToolStripMenuItem.Checked)
             {
                 sqlCmd += " and item_value>" + Properties.Settings.Default.AbnormalLowData
@@ -182,32 +179,30 @@ namespace AnaControl
                           this.dateTimePicker_Start.Value.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
                           + "and format(test_time,'yyyy-MM-dd HH:mm:ss')<=\"" +
                           this.dateTimePicker_End.Value.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
-                          + "and TEST_ITEM_NAME like '" + matchString + "'";
+                          + " group by product_sn)";
             }
             if (this.ToolStripMenuItem_RemovePass.Checked)
             {
                 InvokeOnLog("remove pass data\n");
-                sqlCmd += " and product_sn in( "
-                          + "select distinct(product_sn) from test_results "
-                          + "where fail_code <> 0 and test_time in("
-                          + "select max(test_time) from test_results "
-                          + "group by product_sn)) "
+                sqlCmd += " and test_time in( "
+                          + "select test_time from test_results "
+                          + "where fail_code <> 0 "
+                          + ") "
                           + "and pass_state <> 0";
             }
             if (this.ToolStripMenuItem_RemoveFail.Checked)
             {
                 InvokeOnLog("remove fail data\n");
-                sqlCmd += " and product_sn in( "
-                          + "select distinct(product_sn) from test_results "
-                          + "where fail_code = 0 and test_time in("
-                          + "select max(test_time) from test_results "
-                          + "group by product_sn)) "
+                sqlCmd += " and test_time in( "
+                          + "select test_time from test_results "
+                          + "where fail_code = 0 "
+                          + ") "
                           + "and pass_state = 0";
             }
-            if (this.toolStripMenuItem_RemoveRepeats.Checked)
-            {
-                sqlCmd += " group by product_sn)";
-            }
+            //if (this.toolStripMenuItem_RemoveRepeats.Checked)
+            //{
+            //    sqlCmd += " group by product_sn)";
+            //}
             if (this.去除异常数据ToolStripMenuItem.Checked)
             {
                 sqlCmd += " and item_value>" + Properties.Settings.Default.AbnormalLowData
