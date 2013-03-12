@@ -4,6 +4,7 @@ using System.Data.OleDb;
 using System.Windows.Forms;
 using AnaControl;
 using DbDriver;
+using TestAnaControl.Utils;
 
 namespace TestAnaControl
 {
@@ -30,7 +31,7 @@ namespace TestAnaControl
 
         private void 打开文件ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            ConnectionBuilder.Instance.ShowDialog(this);
         }
 
         private delegate void DelOutputLog(string str);

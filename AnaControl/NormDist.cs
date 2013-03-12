@@ -7,6 +7,9 @@ using Point = System.Drawing.Point;
 using System.Data;
 using System.IO;
 using System.Text;
+using AnaControl.Utils;
+using System.Threading;
+using System.ComponentModel;
 
 namespace AnaControl
 {
@@ -48,12 +51,12 @@ namespace AnaControl
                 this.Refresh();
                 Bitmap bmp = CreateBitmap(this.splitContainer1);
                 SaveFileDialog sfd = new SaveFileDialog();
-                sfd.Filter = "bmp|*.bmp";
-                sfd.FileName = "temp.bmp";
+                sfd.Filter = "png|*.png";
+                sfd.FileName = "temp.png";
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
-                    bmp.Save(sfd.FileName);
-                    this.InvokeOnLog(string.Format("save bitmap file :\n{0}\nsucess", sfd.FileName));
+                    bmp.Save(sfd.FileName,System.Drawing.Imaging.ImageFormat.Png);
+                    this.InvokeOnLog(string.Format("save bitmap file :\n{0}\nSuccess!", sfd.FileName));
                 }
             }
             catch (SystemException exp)
@@ -88,17 +91,54 @@ namespace AnaControl
                 this.InvokeOnLog(exp.Message);
             }
         }
+        string _autoMatch;
+        string _queryKeyString;
+        bool _removeRepeats, _removePass, _removeFail, _removeExceptionData;
+        DateTime _beginTime, _endTime;
+        string _max, _min, _usl, _lsl, _totalCount, _average, _sigma, _target;
+
+        private void UpdateVarialbe(bool toPanel)
+        {
+            if (InvokeRequired)
+            {
+                this.Invoke(new Action<bool>(UpdateVarialbe), toPanel);
+                return;
+            }
+            if (toPanel)
+            {
+                this.tb_Max.Text = _max;
+                this.tb_Min.Text = _min;
+                this.textBox_USL.Text=_usl;
+                this.textBox_LSL.Text = _lsl;
+                this.tb_TotalCount.Text = _totalCount;
+                this.tb_Average.Text = _average;
+                this.tb_Sigma.Text = _sigma;
+                this.textBox_Target.Text = _target;
+            }
+            else
+            {
+                _autoMatch = this.AutoMatch.Text;
+                _queryKeyString = this.toolStripComboBox_ItemSel.Text;
+                _removeRepeats = this.toolStripMenuItem_RemoveRepeats.Checked;
+                _beginTime = this.dateTimePicker_Start.Value;
+                _endTime = this.dateTimePicker_End.Value;
+                _removePass = this.ToolStripMenuItem_RemovePass.Checked;
+                _removeFail = this.ToolStripMenuItem_RemoveFail.Checked;
+                _removeExceptionData = this.去除异常数据ToolStripMenuItem.Checked;
+            }
+        }
+
         private void ReadDataFromDatabase()
         {
             DataTable dt = new DataTable();
             string matchString = "";
-            if(this.AutoMatch.Text == "有通配符")
+            if(_autoMatch == "有通配符")
             {
-                matchString = "%" + this.toolStripComboBox_ItemSel.Text + "%";
+                matchString = "%" + _queryKeyString + "%";
             }
             else
             {
-                matchString = this.toolStripComboBox_ItemSel.Text;
+                matchString = _queryKeyString;
             }
             string sqlCmd = "SELECT avg(item_value) as avgVal,stdev(item_value) as stdVal,"
                             + "min(item_value) as minVal,max(item_value) as maxVal,count(item_value) as totalVal,"
@@ -110,19 +150,19 @@ namespace AnaControl
                             this.dateTimePicker_End.Value.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
                             + "and TEST_ITEM_NAME like '" + matchString + "'";
             InvokeOnLog("create sql cmd...\n");
-            if (this.toolStripMenuItem_RemoveRepeats.Checked)
+            if (_removeRepeats)
             {
                 InvokeOnLog("remove repeats\n");
                 sqlCmd += " and test_time in("
                           + " select max(test_time) "
                           + " from test_results "
                           + "where format(test_time,'yyyy-MM-dd HH:mm:ss')>=\"" +
-                          this.dateTimePicker_Start.Value.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
+                          _beginTime.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
                           + "and format(test_time,'yyyy-MM-dd HH:mm:ss')<=\"" +
-                          this.dateTimePicker_End.Value.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
+                          _endTime.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
                           + " group by product_sn)";
             }
-            if (this.ToolStripMenuItem_RemovePass.Checked)
+            if (_removePass)
             {
                 InvokeOnLog("remove pass data\n");
                 sqlCmd += " and test_time in( "
@@ -131,7 +171,7 @@ namespace AnaControl
                           + ") "
                           + "and pass_state <> 0";
             }
-            if (this.ToolStripMenuItem_RemoveFail.Checked)
+            if (_removeFail)
             {
                 InvokeOnLog("remove fail data\n");
                 sqlCmd += " and test_time in( "
@@ -144,7 +184,7 @@ namespace AnaControl
             //{
             //    sqlCmd += " group by product_sn)";
             //}
-            if(this.去除异常数据ToolStripMenuItem.Checked)
+            if (_removeExceptionData)
             {
                 sqlCmd += " and item_value>" + Properties.Settings.Default.AbnormalLowData
                           + " and item_value<" + Properties.Settings.Default.AbnormalUpData;
@@ -152,19 +192,25 @@ namespace AnaControl
             }
             dt = _db.GetDataTable(sqlCmd);
             InvokeOnLog("query sucess\n");
-            this.tb_Max.Text = dt.Rows[0]["maxVal"].ToString();
-            this.tb_Min.Text = dt.Rows[0]["minVal"].ToString();
-            this.textBox_LSL.Text = double.IsInfinity((double)dt.Rows[0]["lowLimit"]) ? this.tb_Min.Text : dt.Rows[0]["lowLimit"].ToString();
-            this.textBox_USL.Text = double.IsInfinity((double)dt.Rows[0]["upLimit"]) ? this.tb_Max.Text : dt.Rows[0]["upLimit"].ToString();
-            this.tb_TotalCount.Text = dt.Rows[0]["totalVal"].ToString();
-            this.tb_Average.Text = dt.Rows[0]["avgVal"].ToString();
-            this.tb_Sigma.Text = dt.Rows[0]["stdVal"].ToString();
-            this.textBox_Target.Text = this.tb_Average.Text;
+            _max = dt.Rows[0]["maxVal"].ToString();
+            _min = dt.Rows[0]["minVal"].ToString();
+            if (dt.Rows[0]["lowLimit"] is double)
+            {
+                _lsl = double.IsInfinity((double)dt.Rows[0]["lowLimit"]) ? "-100" : dt.Rows[0]["lowLimit"].ToString();
+            }
+            if (dt.Rows[0]["upLimit"] is double)
+            {
+                _usl = double.IsInfinity((double)dt.Rows[0]["upLimit"]) ? "100" : dt.Rows[0]["upLimit"].ToString();
+            }
+            _totalCount = dt.Rows[0]["totalVal"].ToString();
+            _average = dt.Rows[0]["avgVal"].ToString();
+            _sigma = dt.Rows[0]["stdVal"].ToString();
+            _target = _average;
 
             sqlCmd = "SELECT item_value "
                        + "from TEST_ITEM_VALUES "
-                       + "where format(test_time,'yyyy-MM-dd HH:mm:ss')>=\"" + this.dateTimePicker_Start.Value.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
-                       + "and format(test_time,'yyyy-MM-dd HH:mm:ss')<=\"" + this.dateTimePicker_End.Value.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
+                       + "where format(test_time,'yyyy-MM-dd HH:mm:ss')>=\"" + this._beginTime.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
+                       + "and format(test_time,'yyyy-MM-dd HH:mm:ss')<=\"" + this._endTime.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
                        + "and TEST_ITEM_NAME like '" + matchString + "'";
             InvokeOnLog("create sql command...\n");
             if (this.toolStripMenuItem_RemoveRepeats.Checked)
@@ -174,12 +220,12 @@ namespace AnaControl
                           + " select max(test_time) "
                           + " from TEST_ITEM_VALUES "
                           + "where format(test_time,'yyyy-MM-dd HH:mm:ss')>=\"" +
-                          this.dateTimePicker_Start.Value.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
+                          this._beginTime.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
                           + "and format(test_time,'yyyy-MM-dd HH:mm:ss')<=\"" +
-                          this.dateTimePicker_End.Value.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
+                          this._endTime.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
                           + " group by product_sn)";
             }
-            if (this.ToolStripMenuItem_RemovePass.Checked)
+            if (_removePass)
             {
                 InvokeOnLog("remove pass data\n");
                 sqlCmd += " and test_time in( "
@@ -188,7 +234,7 @@ namespace AnaControl
                           + ") "
                           + "and pass_state <> 0";
             }
-            if (this.ToolStripMenuItem_RemoveFail.Checked)
+            if (_removeFail)
             {
                 InvokeOnLog("remove fail data\n");
                 sqlCmd += " and test_time in( "
@@ -201,7 +247,7 @@ namespace AnaControl
             //{
             //    sqlCmd += " group by product_sn)";
             //}
-            if (this.去除异常数据ToolStripMenuItem.Checked)
+            if (_removeExceptionData)
             {
                 sqlCmd += " and item_value>" + Properties.Settings.Default.AbnormalLowData
                           + " and item_value<" + Properties.Settings.Default.AbnormalUpData;
@@ -227,6 +273,7 @@ namespace AnaControl
                     Properties.Settings.Default.DefaultDateTimeEnd = this.dateTimePicker_End.Value;
                     Properties.Settings.Default.DefaultTestItem = this.toolStripComboBox_ItemSel.Text;
                     Properties.Settings.Default.Save();
+                    this.DrawChart();
                 }
                 catch (Exception exp)
                 {
@@ -236,15 +283,22 @@ namespace AnaControl
         }
         private void DrawChart()
         {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(DrawChart));
+                return;
+            }
             #region 局部变量
             double yMax = 0;
             #endregion 局部变量
             #region 计算中间值
             double usl = double.NegativeInfinity, lsl = double.NegativeInfinity;
-            double.TryParse(this.textBox_LSL.Text, out lsl);
-            double.TryParse(this.textBox_USL.Text, out usl);
-            double average = double.Parse(this.tb_Average.Text);
-            double sigma = double.Parse(this.tb_Sigma.Text);
+            if (!double.TryParse(this.textBox_LSL.Text, out lsl)) return;
+            if (!double.TryParse(this.textBox_USL.Text, out usl)) return;
+            double average;
+            if (!double.TryParse(this.tb_Average.Text, out average)) return;
+            double sigma;
+            if (!double.TryParse(this.tb_Sigma.Text, out sigma)) return;
             double cp = (usl - lsl) / (6 * sigma);
             double cpu = (usl - average) / (3 * sigma);
             double cpl = (average - lsl) / (3 * sigma);
@@ -390,7 +444,6 @@ namespace AnaControl
                     Properties.Settings.Default.DefaultDateTimeEnd = this.dateTimePicker_End.Value;
                     Properties.Settings.Default.DefaultTestItem = this.toolStripComboBox_ItemSel.Text;
                     Properties.Settings.Default.Save();
-                    this.ReadDataFromDatabase();
                 }
                 catch (Exception exp)
                 {
@@ -400,15 +453,14 @@ namespace AnaControl
             }
         }
 
-        private void toolStripMenuItem_RemoveRepeats_Click(object sender, EventArgs e)
+        private void toolStripMenuItem_Common_Click(object sender, EventArgs e)
         {
-            if(sender is ToolStripMenuItem)
+            if (sender is ToolStripMenuItem)
             {
                 try
                 {
                     ToolStripMenuItem tmi = sender as ToolStripMenuItem;
                     tmi.Checked = !tmi.Checked;
-                    this.ReadDataFromDatabase();
                 }
                 catch (Exception exp)
                 {
@@ -480,25 +532,10 @@ namespace AnaControl
 
         private void 去除异常数据ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(this.去除异常数据ToolStripMenuItem.Checked==true)
+            AbnormalData dlg = new AbnormalData();
+            if(dlg.ShowDialog()==DialogResult.OK)
             {
-                this.去除异常数据ToolStripMenuItem.Checked = false;
-            }
-            else
-            {
-                AbnormalData dlg = new AbnormalData();
-                if(dlg.ShowDialog()==DialogResult.OK)
-                {
-                    this.去除异常数据ToolStripMenuItem.Checked = true;
-                    try
-                    {
-                        this.ReadDataFromDatabase();
-                    }
-                    catch (Exception exp)
-                    {
-                        this.InvokeOnLog(new MsgEventArgs(exp.Message));
-                    }
-                }
+                this.去除异常数据ToolStripMenuItem.Checked = true;
             }
         }
 
@@ -506,5 +543,31 @@ namespace AnaControl
         {
 
         }
+
+        private void tsmHaveWildcards_Click(object sender, EventArgs e)
+        {
+            this.AutoMatch.Text = "有通配符";
+        }
+
+        private void tsmNoWildcards_Click(object sender, EventArgs e)
+        {
+            this.AutoMatch.Text = "无通配符";
+        }
+
+        private void RefreshButton_Click(object sender, EventArgs e)
+        {
+            DlgWaiting dlg = new DlgWaiting();
+            dlg.OnAction += dlg_OnAction;
+            dlg.ShowDialog();
+        }
+
+        void dlg_OnAction(object sender, EventArgs e)
+        {
+            this.UpdateVarialbe(false);
+            this.ReadDataFromDatabase();
+            this.UpdateVarialbe(true);
+            this.DrawChart();
+        }
+
     }
 }
