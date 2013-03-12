@@ -10,6 +10,7 @@ using System.Text;
 using AnaControl.Utils;
 using System.Threading;
 using System.ComponentModel;
+using DbDriver;
 
 namespace AnaControl
 {
@@ -31,6 +32,11 @@ namespace AnaControl
         private DbProc _db = new DbProc();
         private bool isInitializing;
         private double[] _data;
+        public DbProc Db
+        {
+            get { return _db; }
+            set { _db = value; }
+        }
         public NormDist()
         {
             OnLog = this.LogFunc;

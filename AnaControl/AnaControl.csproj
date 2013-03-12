@@ -118,7 +118,6 @@
     <Compile Include="AbnormalData.Designer.cs">
       <DependentUpon>AbnormalData.cs</DependentUpon>
     </Compile>
-    <Compile Include="DBProcess\DbProc.cs" />
     <Compile Include="Detail.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -223,6 +222,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\search.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DbDriver\DbDriver.csproj">
+      <Project>{340500d5-0543-49c7-b6d6-770c1df80e52}</Project>
+      <Name>DbDriver</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

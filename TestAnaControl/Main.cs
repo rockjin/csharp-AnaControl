@@ -182,6 +182,7 @@ namespace TestAnaControl
         {
             this.panel1.Controls.Clear();
             NormDist dlg = new NormDist();
+            dlg.Db.Conn = new OleDbConnection(ConnectionBuilder.Instance.Conn);
             dlg.Parent = this.panel1;
             dlg.Dock = DockStyle.Fill;
             dlg.Refresh();

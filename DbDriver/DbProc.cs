@@ -53,6 +53,7 @@ namespace DbDriver
         public OleDbConnection Conn
         {
             get { return conn; }
+            set { conn = value; }
         }        
         public DbProc()
         {
@@ -342,7 +343,33 @@ namespace DbDriver
             }
             this.conn = null;
         }
-
+        public string GetTotalCountSql()
+        {
+            string cmdStr;
+            if (this._RemoveRepeat)
+            {
+                cmdStr = "Select count(*) as NUM From TEST_RESULTS T1"
+                    + " where T1.TEST_TIME IN("
+                    + " SELECT MAX(T2.TEST_TIME) FROM TEST_RESULTS T2 "
+                    + " where (format(t2.test_time,'yyyy-MM-dd HH:mm:ss') > "
+                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + " AND format(t2.test_time,'yyyy-MM-dd HH:mm:ss')<="
+                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + ")"
+                    + " GROUP BY T2.PRODUCT_SN"
+                    + ")";
+            }
+            else
+            {
+                cmdStr = "Select count(*) as NUM From TEST_RESULTS"
+                    + " where (format(test_time,'yyyy-MM-dd HH:mm:ss') > "
+                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + " AND format(test_time,'yyyy-MM-dd HH:mm:ss') <="
+                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + ")";
+            }
+            return cmdStr;
+        }
         public bool GetTotalCount(out int count)
         {
             count = 0;
@@ -372,6 +399,34 @@ namespace DbDriver
             DataTable dt = this.GetDataTable(cmdStr);
             count = int.Parse(dt.Rows[0]["NUM"].ToString());
             return true;
+        }
+        public string GetPassCountSql()
+        {
+            string cmdStr;
+            if (this._RemoveRepeat)
+            {
+                cmdStr = "Select * From TEST_RESULTS T1"
+                    + " where T1.TEST_TIME IN("
+                    + " SELECT MAX(T2.TEST_TIME) FROM TEST_RESULTS T2 "
+                    + " where (format(T2.test_time,'yyyy-MM-dd HH:mm:ss') > "
+                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + " AND format(T2.test_time,'yyyy-MM-dd HH:mm:ss') <="
+                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + ")"
+                    + " GROUP BY T2.PRODUCT_SN"
+                    + ")"
+                    + " AND FAIL_CODE = 0";
+            }
+            else
+            {
+                cmdStr = "Select * From TEST_RESULTS where FAIL_CODE = 0"
+                    + "AND (format(test_time,'yyyy-MM-dd HH:mm:ss') > "
+                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + " AND format(test_time,'yyyy-MM-dd HH:mm:ss') <="
+                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + ")";
+            }
+            return cmdStr;
         }
         public bool GetPassCount(out int count)
         {
@@ -404,6 +459,36 @@ namespace DbDriver
             count = int.Parse(dt.Rows[0]["NUM"].ToString());
             return true;
         }
+
+        public string GetFailCountSql()
+        {
+            string cmdStr;
+            if (this._RemoveRepeat)
+            {
+                cmdStr = "Select * From TEST_RESULTS T1"
+                    + " where T1.TEST_TIME IN("
+                    + " SELECT MAX(T2.TEST_TIME) FROM TEST_RESULTS T2 "
+                    + " where (format(T2.test_time,'yyyy-MM-dd HH:mm:ss') > "
+                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + " AND format(T2.test_time,'yyyy-MM-dd HH:mm:ss') <="
+                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + ")"
+                    + " GROUP BY T2.PRODUCT_SN"
+                    + ")"
+                    + " AND FAIL_CODE <> 0";
+            }
+            else
+            {
+                cmdStr = "Select * From TEST_RESULTS T2 where FAIL_CODE <> 0"
+                     + " AND (format(T2.test_time,'yyyy-MM-dd HH:mm:ss') > "
+                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + " AND format(T2.test_time,'yyyy-MM-dd HH:mm:ss') <="
+                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + ")";
+            }
+            return cmdStr;
+        }
+
         public bool GetFailCount(out int count)
         {
             count = 0;
@@ -528,10 +613,19 @@ namespace DbDriver
         }
         public DataTable GetDataTable(string sql)
         {
+            string sqlCmd;
+            if (!this.isMdbConnection)
+                sqlCmd = sql.Replace('#', '\'');
+            else
+                sqlCmd = sql;
             OleDbDataAdapter oda;
-            return GetDataTable(sql, out oda);
+            oda = new OleDbDataAdapter(sqlCmd, conn);
+            new OleDbCommandBuilder(oda);
+            DataTable dt = new DataTable();
+            oda.Fill(dt);
+            return dt;
         }
-        public DataTable GetDataTable(string sql,out OleDbDataAdapter oda)
+        public DataTable GetDataTable(string sql, out OleDbDataAdapter oda)
         {
             string sqlCmd;
             if (!this.isMdbConnection)
@@ -544,6 +638,14 @@ namespace DbDriver
             oda.Fill(dt);
             return dt;
         }
+
+        public string[] GetProduceTypes()
+        {
+            //string sqlCmd="select distinct("
+            return new string[0];
+
+        }
+
         #region IDisposable Members
 
         void IDisposable.Dispose()
