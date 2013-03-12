@@ -71,7 +71,6 @@ namespace AnaControl
                 this.dateTimePicker_Start.Value = Properties.Settings.Default.DefaultDateTimeStart;
                 this.dateTimePicker_End.Value = Properties.Settings.Default.DefaultDateTimeEnd;
                 this.toolStripComboBox_ItemSel.Text = Properties.Settings.Default.DefaultTestItem;
-                this.checkBoxAutoWildcard.Checked = Properties.Settings.Default.AutoWildcard;
                 var strCmd = string.Format("Select max(test_time) from TEST_ITEM_VALUES");
                 DataTable dt = _db.GetDataTable(strCmd);
                 dt.Clear();
@@ -83,7 +82,6 @@ namespace AnaControl
                 }
                 isInitializing = true;
                 ReadDataFromDatabase();
-                DrawChart();
             }
             catch (Exception exp)
             {
@@ -94,7 +92,7 @@ namespace AnaControl
         {
             DataTable dt = new DataTable();
             string matchString = "";
-            if(this.checkBoxAutoWildcard.Checked)
+            if(this.AutoMatch.Text == "有通配符")
             {
                 matchString = "%" + this.toolStripComboBox_ItemSel.Text + "%";
             }
@@ -228,9 +226,7 @@ namespace AnaControl
                     Properties.Settings.Default.DefaultDateTimeStart = this.dateTimePicker_Start.Value;
                     Properties.Settings.Default.DefaultDateTimeEnd = this.dateTimePicker_End.Value;
                     Properties.Settings.Default.DefaultTestItem = this.toolStripComboBox_ItemSel.Text;
-                    Properties.Settings.Default.AutoWildcard = this.checkBoxAutoWildcard.Checked;
                     Properties.Settings.Default.Save();
-                    this.DrawChart();
                 }
                 catch (Exception exp)
                 {
@@ -395,7 +391,6 @@ namespace AnaControl
                     Properties.Settings.Default.DefaultTestItem = this.toolStripComboBox_ItemSel.Text;
                     Properties.Settings.Default.Save();
                     this.ReadDataFromDatabase();
-                    this.DrawChart();
                 }
                 catch (Exception exp)
                 {
@@ -414,7 +409,6 @@ namespace AnaControl
                     ToolStripMenuItem tmi = sender as ToolStripMenuItem;
                     tmi.Checked = !tmi.Checked;
                     this.ReadDataFromDatabase();
-                    this.DrawChart();
                 }
                 catch (Exception exp)
                 {
@@ -499,7 +493,6 @@ namespace AnaControl
                     try
                     {
                         this.ReadDataFromDatabase();
-                        this.DrawChart();
                     }
                     catch (Exception exp)
                     {
