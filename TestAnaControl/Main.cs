@@ -5,17 +5,18 @@ using System.Windows.Forms;
 using AnaControl;
 using DbDriver;
 using TestAnaControl.Utils;
+using AnaControl.Controls;
 
 namespace TestAnaControl
 {
-    public partial class Main : Form
+    public partial class MainForm : Form
     {
-        public Main()
+        public MainForm()
         {
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, System.EventArgs e)
+        private void MainForm_Load(object sender, System.EventArgs e)
         {
             NormDist normDist = new NormDist();
             normDist.Parent=this.panel1;
@@ -28,18 +29,15 @@ namespace TestAnaControl
         {
             OutputLog(e.ToString());
         }
-
-        private void 打开文件ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void OpenFile_Click(object sender, EventArgs e)
         {
             ConnectionBuilder.Instance.ShowDialog(this);
         }
-
-        private delegate void DelOutputLog(string str);
         private void OutputLog(string str)
         {
             if (this.richTextBox1.InvokeRequired)
             {
-                this.Invoke(new DelOutputLog(OutputLog), str);
+                this.Invoke(new Action<string>(OutputLog), str);
                 return;
             }
             this.richTextBox1.AppendText(DateTime.Now.ToString() + "-->" + str);
@@ -54,7 +52,7 @@ namespace TestAnaControl
             string temp = string.Format(format, objects);
             OutputLog(temp);
         }
-        private void 合并文件ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void MergeFile_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.DefaultExt = "mdb";
@@ -65,6 +63,7 @@ namespace TestAnaControl
             }
             DbProc proc1 = new DbProc();
             DbProc proc2 = new DbProc();
+            proc2.Conn = new OleDbConnection(ConnectionBuilder.Instance.Conn);
             proc1.MdbFileName = ofd.FileName;
             proc2.MdbFileName = Application.StartupPath + "\\results.mdb"; 
             proc1.Connect();
@@ -194,6 +193,7 @@ namespace TestAnaControl
         {
             this.panel1.Controls.Clear();
             Capacity dlg = new Capacity();
+            dlg.Db.Conn = new OleDbConnection(ConnectionBuilder.Instance.Conn);
             dlg.Parent = this.panel1;
             dlg.Dock = DockStyle.Fill;
             dlg.Refresh();
@@ -205,6 +205,7 @@ namespace TestAnaControl
         {
             this.panel1.Controls.Clear();
             Detail dlg = new Detail();
+            dlg.Db.Conn = new OleDbConnection(ConnectionBuilder.Instance.Conn);
             dlg.Parent = this.panel1;
             dlg.Dock = DockStyle.Fill;
             dlg.Show();

@@ -15,6 +15,7 @@ using System.Data;
 using System.Data.OleDb;
 using System.Diagnostics;
 using System.IO;
+using System.Collections.Generic;
 
 namespace DbDriver
 {
@@ -620,9 +621,9 @@ namespace DbDriver
                 sqlCmd = sql;
             OleDbDataAdapter oda;
             oda = new OleDbDataAdapter(sqlCmd, conn);
-            new OleDbCommandBuilder(oda);
-            DataTable dt = new DataTable();
+            DataTable dt = new DataTable("Unknow");
             oda.Fill(dt);
+            oda.Dispose();
             return dt;
         }
         public DataTable GetDataTable(string sql, out OleDbDataAdapter oda)
@@ -634,15 +635,21 @@ namespace DbDriver
                 sqlCmd = sql;
             oda = new OleDbDataAdapter(sqlCmd, conn);
             new OleDbCommandBuilder(oda);
-            DataTable dt = new DataTable();
+            DataTable dt = new DataTable("Unknow");
             oda.Fill(dt);
             return dt;
         }
 
         public string[] GetProduceTypes()
         {
-            //string sqlCmd="select distinct("
-            return new string[0];
+            string sqlCmd = "select distinct(PRODUCT_NAME) from TEST_RESULTS";
+            DataTable dt = this.GetDataTable(sqlCmd);
+            List<string> list = new List<string>();
+            foreach (DataRow row in dt.Rows)
+            {
+                list.Add(row["PRODUCT_NAME"].ToString());
+            }
+            return list.ToArray();
 
         }
 
