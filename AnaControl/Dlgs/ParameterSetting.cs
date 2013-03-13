@@ -6,26 +6,22 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using AnaControl.Dlgs;
 
 namespace AnaControl
 {
-    public partial class ProduceSelector : Form
+    public partial class ParameterSetting : Form
     {
-        public ProduceSelector()
+        public ParameterSetting()
         {
             InitializeComponent();
-            DbProc proc =new DbProc();
-            proc.Connect();
-            try
-            {
+        }
 
-            }
-            catch (Exception exp)
-            {
-                MessageBox.Show("无法查询到数据 " + exp.Message);
-                this.Close();
-            }
-            proc.DisConnect();
+        private DbProc _db = new DbProc();
+        public DbProc Db
+        {
+            get { return _db; }
+            set { _db = value; }
         }
 
         private string _produceType = "%";

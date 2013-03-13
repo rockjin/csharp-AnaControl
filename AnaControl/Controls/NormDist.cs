@@ -12,7 +12,7 @@ using System.Threading;
 using System.ComponentModel;
 using DbDriver;
 
-namespace AnaControl
+namespace AnaControl.Controls
 {
     public partial class NormDist : UserControl
     {
@@ -28,10 +28,10 @@ namespace AnaControl
             OnLog(this, e);
         }
         #endregion
-
-        private DbProc _db = new DbProc();
         private bool isInitializing;
         private double[] _data;
+
+        private DbProc _db = new DbProc();
         public DbProc Db
         {
             get { return _db; }
@@ -573,6 +573,15 @@ namespace AnaControl
             this.ReadDataFromDatabase();
             this.UpdateVarialbe(true);
             this.DrawChart();
+        }
+
+        private void ParameterSetting_Click(object sender, EventArgs e)
+        {
+            ParameterSetting dlg = new ParameterSetting();
+            if (dlg.ShowDialog(this) == DialogResult.OK)
+            {
+
+            }
         }
 
     }

@@ -110,12 +110,12 @@ namespace AnaControl.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool DefaultRemoveExceptFail {
+        public bool DefaultRemoveFailData {
             get {
-                return ((bool)(this["DefaultRemoveExceptFail"]));
+                return ((bool)(this["DefaultRemoveFailData"]));
             }
             set {
-                this["DefaultRemoveExceptFail"] = value;
+                this["DefaultRemoveFailData"] = value;
             }
         }
         
@@ -176,6 +176,18 @@ namespace AnaControl.Properties {
             }
             set {
                 this["AutoWildcard"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DefaultRemoveSpecialData {
+            get {
+                return ((bool)(this["DefaultRemoveSpecialData"]));
+            }
+            set {
+                this["DefaultRemoveSpecialData"] = value;
             }
         }
     }

@@ -1,6 +1,6 @@
 ﻿namespace TestAnaControl
 {
-    partial class Main
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Main));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -109,14 +109,14 @@
             this.打开文件ToolStripMenuItem.Name = "打开文件ToolStripMenuItem";
             this.打开文件ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.打开文件ToolStripMenuItem.Text = "打开文件";
-            this.打开文件ToolStripMenuItem.Click += new System.EventHandler(this.打开文件ToolStripMenuItem_Click);
+            this.打开文件ToolStripMenuItem.Click += new System.EventHandler(this.OpenFile_Click);
             // 
             // 合并文件ToolStripMenuItem
             // 
             this.合并文件ToolStripMenuItem.Name = "合并文件ToolStripMenuItem";
             this.合并文件ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
             this.合并文件ToolStripMenuItem.Text = "合并文件";
-            this.合并文件ToolStripMenuItem.Click += new System.EventHandler(this.合并文件ToolStripMenuItem_Click);
+            this.合并文件ToolStripMenuItem.Click += new System.EventHandler(this.MergeFile_Click);
             // 
             // 选项ToolStripMenuItem
             // 
@@ -163,7 +163,7 @@
             this.Name = "Main";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "TestResultAnalyzer";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);

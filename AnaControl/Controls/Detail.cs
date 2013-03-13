@@ -21,21 +21,25 @@ namespace AnaControl
             if (OnLog == null) return;
             OnLog(this, e);
         }
-
+        private DbProc _db = new DbProc();
+        public DbProc Db
+        {
+            get { return _db; }
+            set { _db = value; }
+        }
         private void comboBoxFunction_SelectedIndexChanged(object sender, EventArgs e)
         {
-            DbProc proc = new DbProc();
             if(this.comboBoxFunction.Text=="总数")
             {
-                this.richTextBoxSqlCmd.Text = proc.GetTotalCountSql();
+                this.richTextBoxSqlCmd.Text = _db.GetTotalCountSql();
             }
             else if (this.comboBoxFunction.Text == "PASS数量")
             {
-                this.richTextBoxSqlCmd.Text = proc.GetPassCountSql();
+                this.richTextBoxSqlCmd.Text = _db.GetPassCountSql();
             }
             else if (this.comboBoxFunction.Text == "FAIL数量")
             {
-                this.richTextBoxSqlCmd.Text = proc.GetFailCountSql();
+                this.richTextBoxSqlCmd.Text = _db.GetFailCountSql();
             }
             else
             {
@@ -45,12 +49,9 @@ namespace AnaControl
 
         private void buttonExecute_Click(object sender, EventArgs e)
         {
-            DbProc proc = new DbProc();
-            proc.Connect();
             try
             {
-                bingSource.DataSource = proc.GetDataTable(this.richTextBoxSqlCmd.Text);
-                proc.DisConnect();
+                bingSource.DataSource = _db.GetDataTable(this.richTextBoxSqlCmd.Text);
                 this.dataGridView1.DataSource = bingSource;
             }
             catch (Exception exp)

@@ -25,6 +25,12 @@ namespace AnaControl
     {
         private static int _rotateColor = (int)KnownColor.Red;
         private DateTime _lastestRecordTime = Properties.Settings.Default.DefaultDateTimeEnd;
+        private DbProc _db = new DbProc();
+        public DbProc Db
+        {
+            get { return _db; }
+            set { _db = value; }
+        }
 
         #region log informations
         private void LogFunc(object sender, EventArgs e)
@@ -91,12 +97,12 @@ namespace AnaControl
             this.toolStripMenuItem_RemoveRepeats.Checked = !this.toolStripMenuItem_RemoveRepeats.Checked;
             Properties.Settings.Default.DefaultRemoveRepeat = this.toolStripMenuItem_RemoveRepeats.Checked;
             Properties.Settings.Default.Save();
-            this.DrawChart(new DbProc(), Properties.Settings.Default.DefaultDataType);
+            this.DrawChart(Properties.Settings.Default.DefaultDataType);
         }
 
-        private void DrawChartCapacity(DbProc db)
+        private void DrawChartCapacity()
         {
-            db.RemoveRepeat = Properties.Settings.Default.DefaultRemoveRepeat;
+            _db.RemoveRepeat = Properties.Settings.Default.DefaultRemoveRepeat;
             CultureInfo ci = new CultureInfo("en-us");
             _rotateColor = (int)KnownColor.Red;
             this.chart1.ChartAreas[0].AxisX.Title = "产能分析";
@@ -122,31 +128,31 @@ namespace AnaControl
             for (DateTime s = Properties.Settings.Default.DefaultDateTimeStart; s < _lastestRecordTime; s += tsStep)
             {
                 s = s > _lastestRecordTime ? _lastestRecordTime : s;
-                db.time_start = s;
-                db.time_end = (s + tsStep) < _lastestRecordTime ? (s + tsStep) : _lastestRecordTime;
+                _db.time_start = s;
+                _db.time_end = (s + tsStep) < _lastestRecordTime ? (s + tsStep) : _lastestRecordTime;
                 int count;
                 int val = this.chart1.Series["Total"].Points.Count;
-                db.GetTotalCount(out count);
+                _db.GetTotalCount(out count);
                 this.chart1.Series["Total"].Points.Add(count);
                 this.chart1.Series["Total"].Points[val].Label = count.ToString();
-                this.chart1.Series["Total"].Points[val].AxisLabel = s.ToString() + "\n" + db.time_end.ToString();
+                this.chart1.Series["Total"].Points[val].AxisLabel = s.ToString() + "\n" + _db.time_end.ToString();
 
-                db.GetPassCount(out count);
+                _db.GetPassCount(out count);
                 this.chart1.Series["Pass"].Points.Add(count);
                 this.chart1.Series["Pass"].Points[val].Label = count.ToString();
-                this.chart1.Series["Pass"].Points[val].AxisLabel = s.ToString() + "\n" + db.time_end.ToString();
+                this.chart1.Series["Pass"].Points[val].AxisLabel = s.ToString() + "\n" + _db.time_end.ToString();
 
-                db.GetFailCount(out count);
+                _db.GetFailCount(out count);
                 this.chart1.Series["Fail"].Points.Add(count);
                 this.chart1.Series["Fail"].Points[val].Label = count.ToString();
-                this.chart1.Series["Fail"].Points[val].AxisLabel = s.ToString() + "\n" + db.time_end.ToString();
+                this.chart1.Series["Fail"].Points[val].AxisLabel = s.ToString() + "\n" + _db.time_end.ToString();
                 this.chart1.Series["Fail"].Points[val].ToolTip = this.chart1.Series["Fail"].Points[val].Label;
             }
         }
 
-        private void DrawChartCapacity2(DbProc db)
+        private void DrawChartCapacity2()
         {
-            db.RemoveRepeat = Properties.Settings.Default.DefaultRemoveRepeat;
+            _db.RemoveRepeat = Properties.Settings.Default.DefaultRemoveRepeat;
             CultureInfo ci = new CultureInfo("en-us");
             _rotateColor = (int)KnownColor.Red;
             this.chart1.ChartAreas[0].AxisX.Title = "产能分析";
@@ -162,38 +168,37 @@ namespace AnaControl
             for (DateTime s = Properties.Settings.Default.DefaultDateTimeStart; s < _lastestRecordTime; s += tsStep)
             {
                 s = s > _lastestRecordTime ? _lastestRecordTime : s;
-                db.time_start = s;
-                db.time_end = (s + tsStep) < _lastestRecordTime ? (s + tsStep) : _lastestRecordTime;
+                _db.time_start = s;
+                _db.time_end = (s + tsStep) < _lastestRecordTime ? (s + tsStep) : _lastestRecordTime;
                 int count, sum;
                 int val = this.chart1.Series["Total"].Points.Count;
-                db.GetTotalCount(out count);
+                _db.GetTotalCount(out count);
                 this.chart1.Series["Total"].Points.Add(count);
                 sum = count;
                 this.chart1.Series["Total"].Points[val].Label = "总数(" + count + ") " + "100%";
-                this.chart1.Series["Total"].Points[val].AxisLabel = s.ToString() + "\n" + db.time_end.ToString();
+                this.chart1.Series["Total"].Points[val].AxisLabel = s.ToString() + "\n" + _db.time_end.ToString();
                 this.chart1.Series["Total"].Points[val].Color = Color.Brown;
                 val = this.chart1.Series["Total"].Points.Count;
-                db.GetPassCount(out count);
+                _db.GetPassCount(out count);
                 this.chart1.Series["Total"].Points.Add(count);
                 this.chart1.Series["Total"].Points[val].Label = "PASS(" + count + ") " + ((double)count/sum).ToString("P");
-                this.chart1.Series["Total"].Points[val].AxisLabel = s.ToString() + "\n" + db.time_end.ToString();
+                this.chart1.Series["Total"].Points[val].AxisLabel = s.ToString() + "\n" + _db.time_end.ToString();
                 this.chart1.Series["Total"].Points[val].Color = Color.Green;
                 val = this.chart1.Series["Total"].Points.Count;
-                db.GetFailCount(out count);
+                _db.GetFailCount(out count);
                 this.chart1.Series["Total"].Points.Add(count);
                 this.chart1.Series["Total"].Points[val].Label = "FAIL(" + count + ") " + ((double)count / sum).ToString("P");
-                this.chart1.Series["Total"].Points[val].AxisLabel = s.ToString() + "\n" + db.time_end.ToString();
+                this.chart1.Series["Total"].Points[val].AxisLabel = s.ToString() + "\n" + _db.time_end.ToString();
                 this.chart1.Series["Total"].Points[val].Color = Color.Red;
             }
         }
 
-        private void DrawChart(DbProc db, string DataType)
+        private void DrawChart(string DataType)
         {
             CultureInfo ci = new CultureInfo("en-us");
             _rotateColor = (int)KnownColor.Red;
             try
             {
-                db.Connect();
                 #region ////////////////////////////////产能分析////////////////////////////////////////
 
                 var st = (SeriesChartType)Enum.Parse(typeof(SeriesChartType), Properties.Settings.Default.DefaultChartType);
@@ -201,10 +206,10 @@ namespace AnaControl
                 {
                     case SeriesChartType.Column:
                     case SeriesChartType.Bar:
-                        this.DrawChartCapacity(db);
+                        this.DrawChartCapacity();
                         break;
                     default:
-                        this.DrawChartCapacity2(db);
+                        this.DrawChartCapacity2();
                         break;
                 }
                 #endregion
@@ -214,7 +219,6 @@ namespace AnaControl
             {
                 InvokeOnLog((MsgEventArgs)e.Message);
             }
-            db.DisConnect();
             this.chart1.Refresh();
             //////////////////End Draw Pie/////////////////////////
         }
@@ -248,27 +252,17 @@ namespace AnaControl
         public void RefreshChart()
         {
             string strCmd;
-            DbProc dbproc = new DbProc();
-            try
-            {
-                dbproc.Connect();
-            }
-            catch (System.Exception e)
-            {
-                InvokeOnLog((MsgEventArgs)e.Message);
-                return;
-            }
+
 
             strCmd = string.Format("Select max(test_time) from TEST_ITEM_VALUES");
-            DataTable dt = dbproc.GetDataTable(strCmd);
+            DataTable dt = _db.GetDataTable(strCmd);
             if (dt.Rows.Count > 0 && dt.Rows[0][0] != System.DBNull.Value)
             {
                 _lastestRecordTime = DateTime.Parse(dt.Rows[0][0].ToString()) + new TimeSpan(1, 0, 0, 0);
                 _lastestRecordTime = Properties.Settings.Default.DefaultDateTimeEnd > _lastestRecordTime ? _lastestRecordTime : Properties.Settings.Default.DefaultDateTimeEnd;
             }
             dt.Clear();
-            DrawChart(dbproc, Properties.Settings.Default.DefaultDataType);
-            dbproc.DisConnect();
+            DrawChart(Properties.Settings.Default.DefaultDataType);
         }
 
         private Color NextColor()

@@ -102,6 +102,8 @@
     <Reference Include="Microsoft.Office.Interop.Graph, Version=11.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -109,43 +111,51 @@
     <Reference Include="System.Windows.Forms.DataVisualization">
       <HintPath>bin\x86\Debug\System.Windows.Forms.DataVisualization.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AbnormalData.cs">
+    <Compile Include="Controls\ParameterSettingsWpf.xaml.cs">
+      <DependentUpon>ParameterSettingsWpf.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dlgs\AbnormalData.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AbnormalData.Designer.cs">
+    <Compile Include="Dlgs\AbnormalData.Designer.cs">
       <DependentUpon>AbnormalData.cs</DependentUpon>
     </Compile>
-    <Compile Include="Detail.cs">
+    <Compile Include="Controls\Detail.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Detail.Designer.cs">
+    <Compile Include="Controls\Detail.Designer.cs">
       <DependentUpon>Detail.cs</DependentUpon>
     </Compile>
+    <Compile Include="Dlgs\ParameterSettingWpf.cs" />
     <Compile Include="MsgEventArgs.cs" />
-    <Compile Include="NormDist.cs">
+    <Compile Include="Controls\NormDist.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="NormDist.Designer.cs">
+    <Compile Include="Controls\NormDist.Designer.cs">
       <DependentUpon>NormDist.cs</DependentUpon>
     </Compile>
-    <Compile Include="ProduceSelector.cs">
+    <Compile Include="Dlgs\ParameterSetting.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ProduceSelector.Designer.cs">
-      <DependentUpon>ProduceSelector.cs</DependentUpon>
+    <Compile Include="Dlgs\ParameterSetting.Designer.cs">
+      <DependentUpon>ParameterSetting.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Capacity.cs">
+    <Compile Include="Controls\Capacity.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Capacity.Designer.cs">
+    <Compile Include="Controls\Capacity.Designer.cs">
       <DependentUpon>Capacity.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -164,24 +174,24 @@
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AbnormalData.resx">
+    <EmbeddedResource Include="Dlgs\AbnormalData.resx">
       <DependentUpon>AbnormalData.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Detail.resx">
+    <EmbeddedResource Include="Controls\Detail.resx">
       <DependentUpon>Detail.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NormDist.resx">
+    <EmbeddedResource Include="Controls\NormDist.resx">
       <DependentUpon>NormDist.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ProduceSelector.resx">
-      <DependentUpon>ProduceSelector.cs</DependentUpon>
+    <EmbeddedResource Include="Dlgs\ParameterSetting.resx">
+      <DependentUpon>ParameterSetting.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Capacity.resx">
+    <EmbeddedResource Include="Controls\Capacity.resx">
       <DependentUpon>Capacity.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -191,7 +201,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Save.png" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -228,6 +237,12 @@
       <Project>{340500d5-0543-49c7-b6d6-770c1df80e52}</Project>
       <Name>DbDriver</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls\ParameterSettingsWpf.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
