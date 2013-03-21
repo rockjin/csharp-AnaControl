@@ -518,9 +518,19 @@ namespace AnaControl.Controls
 
         void dlg_OnAction(object sender, EventArgs e)
         {
-            this.ReadDataFromDatabase();
-            UpdateControl();
-            this.DrawChart();
+            try
+            {
+                this.ReadDataFromDatabase();
+                UpdateControl();
+                this.DrawChart();
+            }
+            catch (Exception exp)
+            {
+                this.Invoke(new Action(delegate()
+                    {
+                        InvokeOnLog(new MsgEventArgs(exp.Message));
+                    }));
+            }
         }
 
         private void UpdateControl()

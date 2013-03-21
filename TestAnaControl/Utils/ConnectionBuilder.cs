@@ -26,6 +26,23 @@ namespace TestAnaControl.Utils
         XmlDocument _xmlDoc;
         private void Save()
         {
+            XmlNode root = _xmlDoc.SelectSingleNode("Settings");
+            if (null == root)
+            {
+                root = _xmlDoc.CreateElement("Settings");
+                _xmlDoc.AppendChild(root);
+            }
+            XmlNode element = root.SelectSingleNode("ConnectionString");
+            if (null == element)
+            {
+                element = _xmlDoc.CreateElement("ConnectionString");
+                root.AppendChild(element);
+                element.InnerText = _conn;
+            }
+            else
+            {
+                element.InnerText = _conn;
+            }
             _xmlDoc.Save(xmlFile);
         }
 
@@ -65,6 +82,11 @@ namespace TestAnaControl.Utils
             {
                 return _conn;
             }
+            set
+            {
+                _conn = value;
+                Save();
+            }
         }
         private ConnectionBuilder() 
         {
@@ -97,28 +119,11 @@ namespace TestAnaControl.Utils
 
             dialog.SelectedDataSource = DataSource.AccessDataSource;
             dialog.SelectedDataProvider = DataProvider.OleDBDataProvider;
-            dialog.ConnectionString = _conn;
+            //dialog.ConnectionString = _conn;
 
             if (DataConnectionDialog.Show(dialog, owner) == DialogResult.OK)
             {
                 _conn = dialog.ConnectionString;
-                XmlNode root = _xmlDoc.SelectSingleNode("Settings");
-                if (null == root)
-                {
-                    root = _xmlDoc.CreateElement("Settings");
-                    _xmlDoc.AppendChild(root);
-                }
-                XmlNode element = root.SelectSingleNode("ConnectionString");
-                if (null == element)
-                {
-                    element = _xmlDoc.CreateElement("ConnectionString");
-                    root.AppendChild(element);
-                    element.InnerText = _conn;
-                }
-                else
-                {
-                    element.InnerText = _conn;
-                }
                 Save();
                 return DialogResult.OK;
             }

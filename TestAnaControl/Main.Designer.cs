@@ -90,15 +90,15 @@
             // 打开文件ToolStripMenuItem
             // 
             this.打开文件ToolStripMenuItem.Name = "打开文件ToolStripMenuItem";
-            this.打开文件ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
-            this.打开文件ToolStripMenuItem.Text = "打开文件";
+            this.打开文件ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.打开文件ToolStripMenuItem.Text = "打开数据库";
             this.打开文件ToolStripMenuItem.Click += new System.EventHandler(this.OpenFile_Click);
             // 
             // 合并文件ToolStripMenuItem
             // 
             this.合并文件ToolStripMenuItem.Name = "合并文件ToolStripMenuItem";
-            this.合并文件ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
-            this.合并文件ToolStripMenuItem.Text = "合并文件";
+            this.合并文件ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.合并文件ToolStripMenuItem.Text = "合并数据库";
             this.合并文件ToolStripMenuItem.Click += new System.EventHandler(this.MergeFile_Click);
             // 
             // tsMenuSelector

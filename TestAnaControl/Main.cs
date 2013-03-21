@@ -1,6 +1,7 @@
 ﻿using AnaControl;
 using AnaControl.Controls;
 using AnaControl.Controls.Capacitys;
+using AnaControl.Utils;
 using DbDriver;
 using System;
 using System.Data;
@@ -92,20 +93,24 @@ namespace TestAnaControl
         }
         private void MergeFile_Click(object sender, EventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog();
-            ofd.DefaultExt = "mdb";
-            ofd.Filter = @"Access files (*.mdb)|*.mdb|All files (*.*)|*.*";
-            if(ofd.ShowDialog(this)!=DialogResult.OK)
-            {
-                return;
-            }
+            DlgWaiting dlg = new DlgWaiting();
+            dlg.OnAction += dlg_OnAction;
+            dlg.ShowDialog(this);
+        }
+
+        void dlg_OnAction(object sender, EventArgs e)
+        {
             DbProc proc1 = new DbProc();
             DbProc proc2 = new DbProc();
             proc2.Conn = new OleDbConnection(ConnectionBuilder.Instance.Conn);
-            proc1.MdbFileName = ofd.FileName;
-            proc2.MdbFileName = Application.StartupPath + "\\results.mdb"; 
-            proc1.Connect();
-            proc2.Connect();
+            bool isCancel = false;
+            this.Invoke(new Action(delegate()
+                {
+                    if (ConnectionBuilder.Instance.ShowDialog(this) == System.Windows.Forms.DialogResult.Cancel)
+                        isCancel = true;
+                }));
+            if (isCancel) return;
+            proc1.Conn = new OleDbConnection(ConnectionBuilder.Instance.Conn);
             try
             {
                 OleDbDataAdapter oda;
@@ -156,7 +161,7 @@ namespace TestAnaControl
                     }
                 }
                 oda.Update(table2);
-                mprintf(string.Format("拷贝完成,共计{0}条数据",table2.Rows.Count));
+                mprintf(string.Format("拷贝完成,共计{0}条数据", table2.Rows.Count));
                 mprintf("正在拷贝test_item_values...");
                 table = proc1.GetDataTable("select * from test_item_values");
                 table2 = proc2.GetDataTable("select * from test_item_values", out oda);
@@ -211,8 +216,9 @@ namespace TestAnaControl
             }
             catch (Exception exp)
             {
-                mprintf("拷贝失败-->{0}",exp.Message);
+                mprintf("拷贝失败-->{0}", exp.Message);
             }
+            ConnectionBuilder.Instance.Conn = proc2.Conn.ConnectionString;
         }
 
         //private void 指标分析ToolStripMenuItem_Click(object sender, EventArgs e)
