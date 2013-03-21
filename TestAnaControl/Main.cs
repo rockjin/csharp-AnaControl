@@ -1,11 +1,12 @@
-﻿using System;
+﻿using AnaControl;
+using AnaControl.Controls;
+using AnaControl.Controls.Capacitys;
+using DbDriver;
+using System;
 using System.Data;
 using System.Data.OleDb;
 using System.Windows.Forms;
-using AnaControl;
-using DbDriver;
 using TestAnaControl.Utils;
-using AnaControl.Controls;
 
 namespace TestAnaControl
 {
@@ -14,11 +15,48 @@ namespace TestAnaControl
         public MainForm()
         {
             InitializeComponent();
+            string[] types = AnaFactory.GetAnalyzers();
+            ToolStripMenuItem tm = new ToolStripMenuItem();
+            tm.Text = "指标分析";
+            tm.Click += normDist_Click;
+            this.tsMenuSelector.DropDownItems.Add(tm);
+            foreach (string s in types)
+            {
+                tm = new ToolStripMenuItem(s);
+                tm.Click += tm_Click;
+                this.tsMenuSelector.DropDownItems.Add(tm);
+            }
+        }
+
+        private void normDist_Click(object sender, EventArgs e)
+        {
+            this.panel1.Controls.Clear();
+            NormDist ctl = new NormDist();
+            ctl.Db.Conn = new OleDbConnection(ConnectionBuilder.Instance.Conn);
+            ctl.Parent = this.panel1;
+            ctl.Dock = DockStyle.Fill;
+            ctl.Show();
+            ctl.OnLog += OnMessageLog;
+        }
+
+        void tm_Click(object sender, EventArgs e)
+        {
+            this.panel1.Controls.Clear();
+            ToolStripMenuItem mi = sender as ToolStripMenuItem;
+            if(mi == null) return;
+            AbstrctAnalyzer dlg = AnaFactory.CreateAna(mi.Text);
+            if (dlg == null) return;
+            dlg.Db.Conn = new OleDbConnection(ConnectionBuilder.Instance.Conn);
+            dlg.Parent = this.panel1;
+            dlg.Dock = DockStyle.Fill;
+            dlg.Show();
+            dlg.OnLog += OnMessageLog;
         }
 
         private void MainForm_Load(object sender, System.EventArgs e)
         {
             NormDist normDist = new NormDist();
+            normDist.Db.Conn = new OleDbConnection(ConnectionBuilder.Instance.Conn);
             normDist.Parent=this.panel1;
             normDist.Dock = DockStyle.Fill;
             normDist.Refresh();
@@ -177,39 +215,39 @@ namespace TestAnaControl
             }
         }
 
-        private void 指标分析ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.panel1.Controls.Clear();
-            NormDist dlg = new NormDist();
-            dlg.Db.Conn = new OleDbConnection(ConnectionBuilder.Instance.Conn);
-            dlg.Parent = this.panel1;
-            dlg.Dock = DockStyle.Fill;
-            dlg.Refresh();
-            dlg.Show();
-            dlg.OnLog += OnMessageLog;
-        }
+        //private void 指标分析ToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    this.panel1.Controls.Clear();
+        //    NormDist dlg = new NormDist();
+        //    dlg.Db.Conn = new OleDbConnection(ConnectionBuilder.Instance.Conn);
+        //    dlg.Parent = this.panel1;
+        //    dlg.Dock = DockStyle.Fill;
+        //    dlg.Refresh();
+        //    dlg.Show();
+        //    dlg.OnLog += OnMessageLog;
+        //}
 
-        private void 测试通过率分析ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.panel1.Controls.Clear();
-            Capacity dlg = new Capacity();
-            dlg.Db.Conn = new OleDbConnection(ConnectionBuilder.Instance.Conn);
-            dlg.Parent = this.panel1;
-            dlg.Dock = DockStyle.Fill;
-            dlg.Refresh();
-            dlg.Show();
-            dlg.OnLog += OnMessageLog;
-        }
+        //private void 测试通过率分析ToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    this.panel1.Controls.Clear();
+        //    Capacity dlg = new Capacity();
+        //    dlg.Db.Conn = new OleDbConnection(ConnectionBuilder.Instance.Conn);
+        //    dlg.Parent = this.panel1;
+        //    dlg.Dock = DockStyle.Fill;
+        //    dlg.Refresh();
+        //    dlg.Show();
+        //    dlg.OnLog += OnMessageLog;
+        //}
 
-        private void 详细数据ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            this.panel1.Controls.Clear();
-            Detail dlg = new Detail();
-            dlg.Db.Conn = new OleDbConnection(ConnectionBuilder.Instance.Conn);
-            dlg.Parent = this.panel1;
-            dlg.Dock = DockStyle.Fill;
-            dlg.Show();
-            dlg.OnLog += OnMessageLog;
-        }
+        //private void 详细数据ToolStripMenuItem_Click(object sender, EventArgs e)
+        //{
+        //    this.panel1.Controls.Clear();
+        //    Detail dlg = new Detail();
+        //    dlg.Db.Conn = new OleDbConnection(ConnectionBuilder.Instance.Conn);
+        //    dlg.Parent = this.panel1;
+        //    dlg.Dock = DockStyle.Fill;
+        //    dlg.Show();
+        //    dlg.OnLog += OnMessageLog;
+        //}
     }
 }

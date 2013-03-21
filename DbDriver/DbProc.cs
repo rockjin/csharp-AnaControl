@@ -54,7 +54,18 @@ namespace DbDriver
         public OleDbConnection Conn
         {
             get { return conn; }
-            set { conn = value; }
+            set {
+                try
+                {
+                    if (conn != null && conn.State == ConnectionState.Open)
+                        conn.Close();
+                    conn = value;
+                    if (conn.State == ConnectionState.Open)
+                        conn.Close();
+                    conn.Open();
+                }
+                catch { }
+            }
         }        
         public DbProc()
         {
@@ -210,7 +221,7 @@ namespace DbDriver
                         + "where t1.test_time=t2.test_time "
                         + "and t1.product_sn=t2.product_sn "
                         + "and STATION='" + station_name + "' "
-                        + "and format(t2.test_time,'yyyy-MM-dd HH:mm:ss') >='" + _PassCheckStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "' "
+                        + "and t2.test_time >=#" + _PassCheckStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "# "
                         + "group by t1.product_sn,t1.test_time"
                         + ")";
                     oda = new OleDbDataAdapter(cmdStr, this.conn);
@@ -236,7 +247,7 @@ namespace DbDriver
                     + "where a2.product_sn = '"
                     + serial
                     + "' "
-                    + " and format(a2.test_time,'yyyy-MM-dd HH:mm:ss')>='" + _PassCheckStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "' "
+                    + " and a2.test_time>=#" + _PassCheckStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "# "
                     + "Group by a2.product_sn,a2.test_item_name "
                     + ")"
                     + "tab1,test_item_values tab2,test_results tab3 "
@@ -264,7 +275,7 @@ namespace DbDriver
                     + "where a2.product_sn = '"
                     + serial
                     + "' "
-                    + " and format(a2.test_time,'yyyy-MM-dd HH:mm:ss')>='" + _PassCheckStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "' "
+                    + " and a2.test_time>=#" + _PassCheckStartTime.ToString("yyyy-MM-dd HH:mm:ss") + "# "
                     + "Group by a2.product_sn,a2.test_item_name "
                     + ")"
                     + "tab1,test_item_values tab2,test_results tab3 "
@@ -297,6 +308,8 @@ namespace DbDriver
                     sb.AppendLine("当前测试的单元测试项不全,如果测试项内容有删减，请更新该用例的起始统计时间。");
                     state = false;
                 }
+                dt.Dispose();
+                oda.Dispose();
             }
             catch (OleDbException e)
             {
@@ -352,10 +365,10 @@ namespace DbDriver
                 cmdStr = "Select count(*) as NUM From TEST_RESULTS T1"
                     + " where T1.TEST_TIME IN("
                     + " SELECT MAX(T2.TEST_TIME) FROM TEST_RESULTS T2 "
-                    + " where (format(t2.test_time,'yyyy-MM-dd HH:mm:ss') > "
-                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
-                    + " AND format(t2.test_time,'yyyy-MM-dd HH:mm:ss')<="
-                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + " where (t2.test_time > "
+                    + "#" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "#"
+                    + " AND t2.test_time<="
+                    + "#" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "#"
                     + ")"
                     + " GROUP BY T2.PRODUCT_SN"
                     + ")";
@@ -363,10 +376,10 @@ namespace DbDriver
             else
             {
                 cmdStr = "Select count(*) as NUM From TEST_RESULTS"
-                    + " where (format(test_time,'yyyy-MM-dd HH:mm:ss') > "
-                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
-                    + " AND format(test_time,'yyyy-MM-dd HH:mm:ss') <="
-                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + " where (test_time > "
+                    + "#" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "#"
+                    + " AND test_time <="
+                    + "#" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "#"
                     + ")";
             }
             return cmdStr;
@@ -380,10 +393,10 @@ namespace DbDriver
                 cmdStr = "Select count(*) as NUM From TEST_RESULTS T1"
                     + " where T1.TEST_TIME IN("
                     + " SELECT MAX(T2.TEST_TIME) FROM TEST_RESULTS T2 "
-                    + " where (format(t2.test_time,'yyyy-MM-dd HH:mm:ss') > "
-                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
-                    + " AND format(t2.test_time,'yyyy-MM-dd HH:mm:ss')<="
-                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + " where (t2.test_time > "
+                    + "#" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "#"
+                    + " AND t2.test_time<="
+                    + "#" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "#"
                     + ")"
                     + " GROUP BY T2.PRODUCT_SN"
                     + ")";
@@ -391,14 +404,21 @@ namespace DbDriver
             else
             {
                 cmdStr = "Select count(*) as NUM From TEST_RESULTS"
-                    + " where (format(test_time,'yyyy-MM-dd HH:mm:ss') > "
-                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
-                    + " AND format(test_time,'yyyy-MM-dd HH:mm:ss') <="
-                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + " where (test_time > "
+                    + "#" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "#"
+                    + " AND test_time <="
+                    + "#" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "#"
                     + ")";
             }
             DataTable dt = this.GetDataTable(cmdStr);
-            count = int.Parse(dt.Rows[0]["NUM"].ToString());
+            if (dt.Rows.Count > 0)
+            {
+                count = int.Parse(dt.Rows[0]["NUM"].ToString());
+            }
+            else
+            {
+                count = 0;
+            }
             return true;
         }
         public string GetPassCountSql()
@@ -409,10 +429,10 @@ namespace DbDriver
                 cmdStr = "Select * From TEST_RESULTS T1"
                     + " where T1.TEST_TIME IN("
                     + " SELECT MAX(T2.TEST_TIME) FROM TEST_RESULTS T2 "
-                    + " where (format(T2.test_time,'yyyy-MM-dd HH:mm:ss') > "
-                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
-                    + " AND format(T2.test_time,'yyyy-MM-dd HH:mm:ss') <="
-                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + " where (T2.test_time > "
+                    + "#" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "#"
+                    + " AND T2.test_time <="
+                    + "#" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "#"
                     + ")"
                     + " GROUP BY T2.PRODUCT_SN"
                     + ")"
@@ -421,10 +441,10 @@ namespace DbDriver
             else
             {
                 cmdStr = "Select * From TEST_RESULTS where FAIL_CODE = 0"
-                    + "AND (format(test_time,'yyyy-MM-dd HH:mm:ss') > "
-                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
-                    + " AND format(test_time,'yyyy-MM-dd HH:mm:ss') <="
-                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + "AND (test_time > "
+                    + "#" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "#"
+                    + " AND test_time <="
+                    + "#" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "#"
                     + ")";
             }
             return cmdStr;
@@ -438,10 +458,10 @@ namespace DbDriver
                 cmdStr = "Select count(*) as NUM From TEST_RESULTS T1"
                     + " where T1.TEST_TIME IN("
                     + " SELECT MAX(T2.TEST_TIME) FROM TEST_RESULTS T2 "
-                    + " where (format(T2.test_time,'yyyy-MM-dd HH:mm:ss') > "
-                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
-                    + " AND format(T2.test_time,'yyyy-MM-dd HH:mm:ss') <="
-                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + " where (T2.test_time > "
+                    + "#" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "#"
+                    + " AND T2.test_time <="
+                    + "#" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "#"
                     + ")"
                     + " GROUP BY T2.PRODUCT_SN"
                     + ")"
@@ -450,10 +470,10 @@ namespace DbDriver
             else
             {
                 cmdStr = "Select count(*) as NUM From TEST_RESULTS where FAIL_CODE = 0"
-                    + "AND (format(test_time,'yyyy-MM-dd HH:mm:ss') > "
-                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
-                    + " AND format(test_time,'yyyy-MM-dd HH:mm:ss') <="
-                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + "AND (test_time > "
+                    + "#" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "#"
+                    + " AND test_time <="
+                    + "#" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "#"
                     + ")";
             }
             DataTable dt = this.GetDataTable(cmdStr);
@@ -469,10 +489,10 @@ namespace DbDriver
                 cmdStr = "Select * From TEST_RESULTS T1"
                     + " where T1.TEST_TIME IN("
                     + " SELECT MAX(T2.TEST_TIME) FROM TEST_RESULTS T2 "
-                    + " where (format(T2.test_time,'yyyy-MM-dd HH:mm:ss') > "
-                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
-                    + " AND format(T2.test_time,'yyyy-MM-dd HH:mm:ss') <="
-                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + " where (T2.test_time > "
+                    + "#" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "#"
+                    + " AND T2.test_time <="
+                    + "#" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "#"
                     + ")"
                     + " GROUP BY T2.PRODUCT_SN"
                     + ")"
@@ -481,10 +501,10 @@ namespace DbDriver
             else
             {
                 cmdStr = "Select * From TEST_RESULTS T2 where FAIL_CODE <> 0"
-                     + " AND (format(T2.test_time,'yyyy-MM-dd HH:mm:ss') > "
-                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
-                    + " AND format(T2.test_time,'yyyy-MM-dd HH:mm:ss') <="
-                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                     + " AND (T2.test_time > "
+                    + "#" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "#"
+                    + " AND T2.test_time <="
+                    + "#" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "#"
                     + ")";
             }
             return cmdStr;
@@ -499,10 +519,10 @@ namespace DbDriver
                 cmdStr = "Select count(*) as NUM From TEST_RESULTS T1"
                     + " where T1.TEST_TIME IN("
                     + " SELECT MAX(T2.TEST_TIME) FROM TEST_RESULTS T2 "
-                    + " where (format(T2.test_time,'yyyy-MM-dd HH:mm:ss') > "
-                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
-                    + " AND format(T2.test_time,'yyyy-MM-dd HH:mm:ss') <="
-                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + " where (T2.test_time > "
+                    + "#" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "#"
+                    + " AND T2.test_time <="
+                    + "#" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "#"
                     + ")"
                     + " GROUP BY T2.PRODUCT_SN"
                     + ")"
@@ -511,10 +531,10 @@ namespace DbDriver
             else
             {
                 cmdStr = "Select count(*) as NUM From TEST_RESULTS T2 where FAIL_CODE <> 0"
-                     + " AND (format(T2.test_time,'yyyy-MM-dd HH:mm:ss') > "
-                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
-                    + " AND format(T2.test_time,'yyyy-MM-dd HH:mm:ss') <="
-                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                     + " AND (T2.test_time > "
+                    + "#" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "#"
+                    + " AND T2.test_time <="
+                    + "#" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "#"
                     + ")";
             }
             DataTable dt = this.GetDataTable(cmdStr);
@@ -533,12 +553,12 @@ namespace DbDriver
                 + "where tab1.num1=tab2.test_time "
                 + "and tab1.product_sn=tab2.product_sn "
                 + "and tab2.fail_code=0 "
-                + "and format(test_time,'yyyy-MM-dd HH:mm:ss')>=\""
+                + "and test_time>=#"
                 + this.time_start.ToString("yyyy-MM-dd HH:mm:ss")
-                + "\""
-                + "and format(test_time,'yyyy-MM-dd HH:mm:ss')<=\""
+                + "#"
+                + "and test_time<=#"
                 + this.time_end.ToString("yyyy-MM-dd HH:mm:ss")
-                + "\""
+                + "#"
                 + @"and STATION = '"
                 + station
                 + @"'"
@@ -561,10 +581,10 @@ namespace DbDriver
                     + "("
                     + "select min(t2.test_time) "
                     + "from test_results t2 "
-                    + "where (format(T2.test_time,'yyyy-MM-dd HH:mm:ss') > "
-                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
-                    + " AND format(T2.test_time,'yyyy-MM-dd HH:mm:ss') <="
-                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + "where (T2.test_time > "
+                    + "#" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "#"
+                    + " AND T2.test_time <="
+                    + "#" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "#"
                     + ") "
                     + @"and product_name like '%"+product_type+@"%' "
                     + @"and station like '%" + station + @"%' "
@@ -579,10 +599,10 @@ namespace DbDriver
                 cmdStr = "select * from("
                     + "Select count(fail_code),fail_code as NUM From TEST_RESULTS "
                     + "where FAIL_CODE <> 0 "
-                    + "AND (format(test_time,'yyyy-MM-dd HH:mm:ss') > "
-                    + "\"" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "\""
-                    + " AND format(test_time,'yyyy-MM-dd HH:mm:ss') <="
-                    + "\"" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "\""
+                    + "AND (test_time > "
+                    + "#" + this.time_start.ToString("yyyy-MM-dd HH:mm:ss") + "#"
+                    + " AND test_time <="
+                    + "#" + this.time_end.ToString("yyyy-MM-dd HH:mm:ss") + "#"
                     + ") "
                     + @"and product_name like '%" + product_type + @"%' "
                     + @"and station like '%" + station + @"%' "
@@ -615,7 +635,8 @@ namespace DbDriver
         public DataTable GetDataTable(string sql)
         {
             string sqlCmd;
-            if (!this.isMdbConnection)
+            if (this.conn.Provider != "Microsoft.Jet.OLEDB.4.0"
+                && conn.Provider != "Microsoft.ACE.OLEDB.12.0")
                 sqlCmd = sql.Replace('#', '\'');
             else
                 sqlCmd = sql;
@@ -629,7 +650,8 @@ namespace DbDriver
         public DataTable GetDataTable(string sql, out OleDbDataAdapter oda)
         {
             string sqlCmd;
-            if (!this.isMdbConnection)
+            if (this.conn.Provider != "Microsoft.Jet.OLEDB.4.0"
+                && conn.Provider != "Microsoft.ACE.OLEDB.12.0")
                 sqlCmd = sql.Replace('#', '\'');
             else
                 sqlCmd = sql;

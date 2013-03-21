@@ -68,12 +68,6 @@ namespace AnaControl.Controls
             System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint27 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, "0,0,0");
             System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint28 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, "0,0,0");
-            this.ToolStripMenuItem_RemoveFail = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
-            this.toolStripMenuItem_RemoveRepeats = new System.Windows.Forms.ToolStripMenuItem();
-            this.ToolStripMenuItem_RemovePass = new System.Windows.Forms.ToolStripMenuItem();
-            this.去除异常数据ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.产品类型选择ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.dateTimePicker_End = new System.Windows.Forms.DateTimePicker();
@@ -114,19 +108,13 @@ namespace AnaControl.Controls
             this.toolStripToolbar = new System.Windows.Forms.ToolStrip();
             this.RefreshButton = new System.Windows.Forms.ToolStripButton();
             this.保存SToolStripButton = new System.Windows.Forms.ToolStripButton();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripComboBox_ItemSel = new System.Windows.Forms.ToolStripComboBox();
-            this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.AutoMatch = new System.Windows.Forms.ToolStripDropDownButton();
-            this.tsmHaveWildcards = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmNoWildcards = new System.Windows.Forms.ToolStripMenuItem();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.contextMenuStrip_msChart = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ParameterSetting = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem_Save = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_CopyBmp = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_CopyData = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.ParameterSetting = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel1.SuspendLayout();
             this.toolStripToolbar.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
@@ -136,59 +124,6 @@ namespace AnaControl.Controls
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // ToolStripMenuItem_RemoveFail
-            // 
-            this.ToolStripMenuItem_RemoveFail.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.ToolStripMenuItem_RemoveFail.Name = "ToolStripMenuItem_RemoveFail";
-            this.ToolStripMenuItem_RemoveFail.Size = new System.Drawing.Size(153, 22);
-            this.ToolStripMenuItem_RemoveFail.Text = "去除FAIL数据";
-            this.ToolStripMenuItem_RemoveFail.Click += new System.EventHandler(this.toolStripMenuItem_Common_Click);
-            // 
-            // toolStripDropDownButton1
-            // 
-            this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem_RemoveRepeats,
-            this.ToolStripMenuItem_RemovePass,
-            this.ToolStripMenuItem_RemoveFail,
-            this.去除异常数据ToolStripMenuItem,
-            this.产品类型选择ToolStripMenuItem});
-            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
-            this.toolStripDropDownButton1.Size = new System.Drawing.Size(69, 36);
-            this.toolStripDropDownButton1.Text = "过滤选项";
-            // 
-            // toolStripMenuItem_RemoveRepeats
-            // 
-            this.toolStripMenuItem_RemoveRepeats.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.toolStripMenuItem_RemoveRepeats.Name = "toolStripMenuItem_RemoveRepeats";
-            this.toolStripMenuItem_RemoveRepeats.Size = new System.Drawing.Size(153, 22);
-            this.toolStripMenuItem_RemoveRepeats.Text = "去除重复项";
-            this.toolStripMenuItem_RemoveRepeats.Click += new System.EventHandler(this.toolStripMenuItem_Common_Click);
-            // 
-            // ToolStripMenuItem_RemovePass
-            // 
-            this.ToolStripMenuItem_RemovePass.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.ToolStripMenuItem_RemovePass.Name = "ToolStripMenuItem_RemovePass";
-            this.ToolStripMenuItem_RemovePass.Size = new System.Drawing.Size(153, 22);
-            this.ToolStripMenuItem_RemovePass.Text = "去除PASS数据";
-            this.ToolStripMenuItem_RemovePass.Click += new System.EventHandler(this.toolStripMenuItem_Common_Click);
-            // 
-            // 去除异常数据ToolStripMenuItem
-            // 
-            this.去除异常数据ToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.去除异常数据ToolStripMenuItem.Name = "去除异常数据ToolStripMenuItem";
-            this.去除异常数据ToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.去除异常数据ToolStripMenuItem.Text = "去除异常数据";
-            this.去除异常数据ToolStripMenuItem.Click += new System.EventHandler(this.去除异常数据ToolStripMenuItem_Click);
-            // 
-            // 产品类型选择ToolStripMenuItem
-            // 
-            this.产品类型选择ToolStripMenuItem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.产品类型选择ToolStripMenuItem.Name = "产品类型选择ToolStripMenuItem";
-            this.产品类型选择ToolStripMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.产品类型选择ToolStripMenuItem.Text = "产品类型选择";
-            this.产品类型选择ToolStripMenuItem.Click += new System.EventHandler(this.产品类型选择ToolStripMenuItem_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -282,6 +217,7 @@ namespace AnaControl.Controls
             this.tableLayoutPanel1.SetColumnSpan(this.dateTimePicker_End, 2);
             this.dateTimePicker_End.CustomFormat = "yyyy-MM-dd HH:mm:ss";
             this.dateTimePicker_End.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dateTimePicker_End.Enabled = false;
             this.dateTimePicker_End.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dateTimePicker_End.Location = new System.Drawing.Point(33, 455);
             this.dateTimePicker_End.Name = "dateTimePicker_End";
@@ -302,10 +238,13 @@ namespace AnaControl.Controls
             // 
             // dateTimePicker_Start
             // 
+            this.dateTimePicker_Start.CalendarMonthBackground = System.Drawing.SystemColors.Control;
             this.tableLayoutPanel1.SetColumnSpan(this.dateTimePicker_Start, 2);
             this.dateTimePicker_Start.CustomFormat = "yyyy-MM-dd HH:mm:ss";
             this.dateTimePicker_Start.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dateTimePicker_Start.Enabled = false;
             this.dateTimePicker_Start.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dateTimePicker_Start.ImeMode = System.Windows.Forms.ImeMode.NoControl;
             this.dateTimePicker_Start.Location = new System.Drawing.Point(33, 428);
             this.dateTimePicker_Start.Name = "dateTimePicker_Start";
             this.dateTimePicker_Start.Size = new System.Drawing.Size(185, 21);
@@ -637,12 +576,7 @@ namespace AnaControl.Controls
             this.toolStripToolbar.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.toolStripToolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.RefreshButton,
-            this.保存SToolStripButton,
-            this.toolStripSeparator1,
-            this.toolStripDropDownButton1,
-            this.toolStripComboBox_ItemSel,
-            this.toolStripSeparator,
-            this.AutoMatch});
+            this.保存SToolStripButton});
             this.toolStripToolbar.Location = new System.Drawing.Point(0, 0);
             this.toolStripToolbar.Name = "toolStripToolbar";
             this.toolStripToolbar.Size = new System.Drawing.Size(750, 39);
@@ -668,50 +602,6 @@ namespace AnaControl.Controls
             this.保存SToolStripButton.Size = new System.Drawing.Size(36, 36);
             this.保存SToolStripButton.Text = "保存(&S)";
             this.保存SToolStripButton.Click += new System.EventHandler(this.tsbSave_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 39);
-            // 
-            // toolStripComboBox_ItemSel
-            // 
-            this.toolStripComboBox_ItemSel.BackColor = System.Drawing.SystemColors.Control;
-            this.toolStripComboBox_ItemSel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.toolStripComboBox_ItemSel.Name = "toolStripComboBox_ItemSel";
-            this.toolStripComboBox_ItemSel.Size = new System.Drawing.Size(450, 39);
-            this.toolStripComboBox_ItemSel.TextChanged += new System.EventHandler(this.toolStripComboBox_ItemSel_TextChanged);
-            // 
-            // toolStripSeparator
-            // 
-            this.toolStripSeparator.Name = "toolStripSeparator";
-            this.toolStripSeparator.Size = new System.Drawing.Size(6, 39);
-            // 
-            // AutoMatch
-            // 
-            this.AutoMatch.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.AutoMatch.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmHaveWildcards,
-            this.tsmNoWildcards});
-            this.AutoMatch.Image = ((System.Drawing.Image)(resources.GetObject("AutoMatch.Image")));
-            this.AutoMatch.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.AutoMatch.Name = "AutoMatch";
-            this.AutoMatch.Size = new System.Drawing.Size(69, 36);
-            this.AutoMatch.Text = "有通配符";
-            // 
-            // tsmHaveWildcards
-            // 
-            this.tsmHaveWildcards.Name = "tsmHaveWildcards";
-            this.tsmHaveWildcards.Size = new System.Drawing.Size(124, 22);
-            this.tsmHaveWildcards.Text = "有通配符";
-            this.tsmHaveWildcards.Click += new System.EventHandler(this.tsmHaveWildcards_Click);
-            // 
-            // tsmNoWildcards
-            // 
-            this.tsmNoWildcards.Name = "tsmNoWildcards";
-            this.tsmNoWildcards.Size = new System.Drawing.Size(124, 22);
-            this.tsmNoWildcards.Text = "无通配符";
-            this.tsmNoWildcards.Click += new System.EventHandler(this.tsmNoWildcards_Click);
             // 
             // chart1
             // 
@@ -811,27 +701,34 @@ namespace AnaControl.Controls
             this.ToolStripMenuItem_CopyBmp,
             this.ToolStripMenuItem_CopyData});
             this.contextMenuStrip_msChart.Name = "contextMenuStrip_msChart";
-            this.contextMenuStrip_msChart.Size = new System.Drawing.Size(153, 114);
+            this.contextMenuStrip_msChart.Size = new System.Drawing.Size(125, 92);
             this.contextMenuStrip_msChart.Text = "Save";
+            // 
+            // ParameterSetting
+            // 
+            this.ParameterSetting.Name = "ParameterSetting";
+            this.ParameterSetting.Size = new System.Drawing.Size(124, 22);
+            this.ParameterSetting.Text = "参数配置";
+            this.ParameterSetting.Click += new System.EventHandler(this.ParameterSetting_Click);
             // 
             // toolStripMenuItem_Save
             // 
             this.toolStripMenuItem_Save.Name = "toolStripMenuItem_Save";
-            this.toolStripMenuItem_Save.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem_Save.Size = new System.Drawing.Size(124, 22);
             this.toolStripMenuItem_Save.Text = "保存数据";
             this.toolStripMenuItem_Save.Click += new System.EventHandler(this.toolStripMenuItem_Save_Click);
             // 
             // ToolStripMenuItem_CopyBmp
             // 
             this.ToolStripMenuItem_CopyBmp.Name = "ToolStripMenuItem_CopyBmp";
-            this.ToolStripMenuItem_CopyBmp.Size = new System.Drawing.Size(152, 22);
+            this.ToolStripMenuItem_CopyBmp.Size = new System.Drawing.Size(124, 22);
             this.ToolStripMenuItem_CopyBmp.Text = "拷贝图片";
             this.ToolStripMenuItem_CopyBmp.Click += new System.EventHandler(this.ToolStripMenuItem_CopyBmp_Click);
             // 
             // ToolStripMenuItem_CopyData
             // 
             this.ToolStripMenuItem_CopyData.Name = "ToolStripMenuItem_CopyData";
-            this.ToolStripMenuItem_CopyData.Size = new System.Drawing.Size(152, 22);
+            this.ToolStripMenuItem_CopyData.Size = new System.Drawing.Size(124, 22);
             this.ToolStripMenuItem_CopyData.Text = "拷贝数据";
             this.ToolStripMenuItem_CopyData.Click += new System.EventHandler(this.ToolStripMenuItem_CopyData_Click);
             // 
@@ -855,13 +752,6 @@ namespace AnaControl.Controls
             this.splitContainer1.Size = new System.Drawing.Size(750, 504);
             this.splitContainer1.SplitterDistance = 515;
             this.splitContainer1.TabIndex = 13;
-            // 
-            // ParameterSetting
-            // 
-            this.ParameterSetting.Name = "ParameterSetting";
-            this.ParameterSetting.Size = new System.Drawing.Size(152, 22);
-            this.ParameterSetting.Text = "参数配置";
-            this.ParameterSetting.Click += new System.EventHandler(this.ParameterSetting_Click);
             // 
             // NormDist
             // 
@@ -889,10 +779,6 @@ namespace AnaControl.Controls
 
         #endregion
 
-        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_RemoveFail;
-        private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_RemoveRepeats;
-        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_RemovePass;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DateTimePicker dateTimePicker_End;
@@ -929,7 +815,6 @@ namespace AnaControl.Controls
         private System.Windows.Forms.TextBox textBox_USL;
         private System.Windows.Forms.TextBox textBox_Target;
         private System.Windows.Forms.ToolStrip toolStripToolbar;
-        private System.Windows.Forms.ToolStripComboBox toolStripComboBox_ItemSel;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip_msChart;
@@ -938,15 +823,8 @@ namespace AnaControl.Controls
         private System.Windows.Forms.TextBox textBoxDefect;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_CopyBmp;
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_CopyData;
-        private System.Windows.Forms.ToolStripMenuItem 去除异常数据ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 产品类型选择ToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton RefreshButton;
         private System.Windows.Forms.ToolStripButton 保存SToolStripButton;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
-        private System.Windows.Forms.ToolStripDropDownButton AutoMatch;
-        private System.Windows.Forms.ToolStripMenuItem tsmHaveWildcards;
-        private System.Windows.Forms.ToolStripMenuItem tsmNoWildcards;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem ParameterSetting;
     }
 }

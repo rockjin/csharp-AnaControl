@@ -44,6 +44,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -53,6 +54,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
     <DebugSymbols>true</DebugSymbols>
@@ -64,6 +66,7 @@
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -75,6 +78,7 @@
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -86,6 +90,7 @@
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -97,6 +102,7 @@
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Office.Interop.Graph, Version=11.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
@@ -108,9 +114,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Forms.DataVisualization">
-      <HintPath>bin\x86\Debug\System.Windows.Forms.DataVisualization.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="UIAutomationProvider" />
@@ -118,8 +122,32 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\AbstrctAnalyzer.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\AbstrctAnalyzer.Designer.cs">
+      <DependentUpon>AbstrctAnalyzer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Capacitys\CapacitySettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\Capacitys\CapacitySettings.Designer.cs">
+      <DependentUpon>CapacitySettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ParameterSettingsWpf.xaml.cs">
       <DependentUpon>ParameterSettingsWpf.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TimeDistribution\TimeDistributeCtl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TimeDistribution\TimeDistributeCtl.Designer.cs">
+      <DependentUpon>TimeDistributeCtl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TimeDistribution\TimeDistributeSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\TimeDistribution\TimeDistributeSettings.Designer.cs">
+      <DependentUpon>TimeDistributeSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="Dlgs\AbnormalData.cs">
       <SubType>Form</SubType>
@@ -133,7 +161,6 @@
     <Compile Include="Controls\Detail.Designer.cs">
       <DependentUpon>Detail.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dlgs\ParameterSettingWpf.cs" />
     <Compile Include="MsgEventArgs.cs" />
     <Compile Include="Controls\NormDist.cs">
       <SubType>UserControl</SubType>
@@ -152,10 +179,10 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Capacity.cs">
+    <Compile Include="Controls\Capacitys\Capacity.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\Capacity.Designer.cs">
+    <Compile Include="Controls\Capacitys\Capacity.Designer.cs">
       <DependentUpon>Capacity.cs</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -174,6 +201,18 @@
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\AbstrctAnalyzer.resx">
+      <DependentUpon>AbstrctAnalyzer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Capacitys\CapacitySettings.resx">
+      <DependentUpon>CapacitySettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TimeDistribution\TimeDistributeCtl.resx">
+      <DependentUpon>TimeDistributeCtl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TimeDistribution\TimeDistributeSettings.resx">
+      <DependentUpon>TimeDistributeSettings.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Dlgs\AbnormalData.resx">
       <DependentUpon>AbnormalData.cs</DependentUpon>
     </EmbeddedResource>
@@ -191,7 +230,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\Capacity.resx">
+    <EmbeddedResource Include="Controls\Capacitys\Capacity.resx">
       <DependentUpon>Capacity.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>

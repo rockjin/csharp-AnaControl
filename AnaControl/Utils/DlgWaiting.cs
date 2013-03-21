@@ -18,7 +18,6 @@ namespace AnaControl.Utils
         }
 
         public event EventHandler OnAction;
-        private bool isComplete = false;
 
         private void DlgWaiting_Load(object sender, EventArgs e)
         {

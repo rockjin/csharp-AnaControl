@@ -1,16 +1,15 @@
-﻿using System;
+﻿using AnaControl.Utils;
+using DbDriver;
+using System;
+using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using Point = System.Drawing.Point;
-using System.Data;
-using System.IO;
-using System.Text;
-using AnaControl.Utils;
-using System.Threading;
-using System.ComponentModel;
-using DbDriver;
+using AnaControl.Dlgs;
 
 namespace AnaControl.Controls
 {
@@ -76,124 +75,75 @@ namespace AnaControl.Controls
         {
             try
             {
-                _db.Connect();
                 this.dateTimePicker_Start.Value = Properties.Settings.Default.DefaultDateTimeStart;
                 this.dateTimePicker_End.Value = Properties.Settings.Default.DefaultDateTimeEnd;
-                this.toolStripComboBox_ItemSel.Text = Properties.Settings.Default.DefaultTestItem;
-                var strCmd = string.Format("Select max(test_time) from TEST_ITEM_VALUES");
-                DataTable dt = _db.GetDataTable(strCmd);
-                dt.Clear();
-                strCmd = string.Format("SELECT DISTINCT TEST_ITEM_NAME FROM TEST_ITEM_VALUES");
-                dt = _db.GetDataTable(strCmd);
-                foreach (DataRow row in dt.Rows)
-                {
-                    this.toolStripComboBox_ItemSel.Items.Add(row["TEST_ITEM_NAME"].ToString());
-                }
+                //var strCmd = string.Format("Select max(test_time) from TEST_ITEM_VALUES");
+                //DataTable dt = _db.GetDataTable(strCmd);
+                //dt.Clear();
+                //strCmd = string.Format("SELECT DISTINCT TEST_ITEM_NAME FROM TEST_ITEM_VALUES");
+                //dt = _db.GetDataTable(strCmd);
                 isInitializing = true;
-                ReadDataFromDatabase();
             }
             catch (Exception exp)
             {
                 this.InvokeOnLog(exp.Message);
             }
         }
-        string _autoMatch;
-        string _queryKeyString;
-        bool _removeRepeats, _removePass, _removeFail, _removeExceptionData;
-        DateTime _beginTime, _endTime;
-        string _max, _min, _usl, _lsl, _totalCount, _average, _sigma, _target;
-
-        private void UpdateVarialbe(bool toPanel)
-        {
-            if (InvokeRequired)
-            {
-                this.Invoke(new Action<bool>(UpdateVarialbe), toPanel);
-                return;
-            }
-            if (toPanel)
-            {
-                this.tb_Max.Text = _max;
-                this.tb_Min.Text = _min;
-                this.textBox_USL.Text=_usl;
-                this.textBox_LSL.Text = _lsl;
-                this.tb_TotalCount.Text = _totalCount;
-                this.tb_Average.Text = _average;
-                this.tb_Sigma.Text = _sigma;
-                this.textBox_Target.Text = _target;
-            }
-            else
-            {
-                _autoMatch = this.AutoMatch.Text;
-                _queryKeyString = this.toolStripComboBox_ItemSel.Text;
-                _removeRepeats = this.toolStripMenuItem_RemoveRepeats.Checked;
-                _beginTime = this.dateTimePicker_Start.Value;
-                _endTime = this.dateTimePicker_End.Value;
-                _removePass = this.ToolStripMenuItem_RemovePass.Checked;
-                _removeFail = this.ToolStripMenuItem_RemoveFail.Checked;
-                _removeExceptionData = this.去除异常数据ToolStripMenuItem.Checked;
-            }
-        }
+        string _max, _min, _usl, _lsl, _totalCount, _average, _sigma, _target, _m3Sigma, _p3Sigma;
 
         private void ReadDataFromDatabase()
         {
             DataTable dt = new DataTable();
             string matchString = "";
-            if(_autoMatch == "有通配符")
+            if (Properties.Settings.Default.AutoWildcard)
             {
-                matchString = "%" + _queryKeyString + "%";
+                matchString = "%" + Properties.Settings.Default.DefaultTestItem + "%";
             }
             else
             {
-                matchString = _queryKeyString;
+                matchString = Properties.Settings.Default.DefaultTestItem;
             }
-            string sqlCmd = "SELECT avg(item_value) as avgVal,stdev(item_value) as stdVal,"
-                            + "min(item_value) as minVal,max(item_value) as maxVal,count(item_value) as totalVal,"
-                            + "min(Low_Limit) as lowLimit,max(up_limit) as upLimit "
-                            + "from TEST_ITEM_VALUES "
-                            + "where format(test_time,'yyyy-MM-dd HH:mm:ss')>=\"" +
-                            this.dateTimePicker_Start.Value.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
-                            + "and format(test_time,'yyyy-MM-dd HH:mm:ss')<=\"" +
-                            this.dateTimePicker_End.Value.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
-                            + "and TEST_ITEM_NAME like '" + matchString + "'";
+            string sqlCmd = "SELECT avg(t1.item_value) as avgVal,stdev(t1.item_value) as stdVal,"
+                            + "min(t1.item_value) as minVal,max(t1.item_value) as maxVal,count(t1.item_value) as totalVal,"
+                            + "min(t1.Low_Limit) as lowLimit,max(t1.up_limit) as upLimit "
+                            + "from TEST_ITEM_VALUES t1, TEST_RESULTS t2 "
+                            + "where t2.test_time>=#" +
+                            Properties.Settings.Default.DefaultDateTimeStart.ToString("yyyy-MM-dd HH:mm:ss") + "# "
+                            + "and t2.test_time<=#" +
+                            Properties.Settings.Default.DefaultDateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss") + "# "
+                            + "and t1.TEST_ITEM_NAME like '" + matchString + "' "
+                            + "and t1.PRODUCT_SN = t2.PRODUCT_SN and t1.TEST_TIME=t2.TEST_TIME ";
             InvokeOnLog("create sql cmd...\n");
-            if (_removeRepeats)
+            if (Properties.Settings.Default.DefaultRemoveRepeat)
             {
                 InvokeOnLog("remove repeats\n");
-                sqlCmd += " and test_time in("
+                sqlCmd += " and t1.test_time in("
                           + " select max(test_time) "
                           + " from test_results "
-                          + "where format(test_time,'yyyy-MM-dd HH:mm:ss')>=\"" +
-                          _beginTime.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
-                          + "and format(test_time,'yyyy-MM-dd HH:mm:ss')<=\"" +
-                          _endTime.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
+                          + "where test_time>=#" +
+                           Properties.Settings.Default.DefaultDateTimeStart.ToString("yyyy-MM-dd HH:mm:ss") + "# "
+                          + "and test_time<=#" +
+                           Properties.Settings.Default.DefaultDateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss") + "# "
                           + " group by product_sn)";
             }
-            if (_removePass)
+            if (Properties.Settings.Default.DefaultRemovePassData)
             {
                 InvokeOnLog("remove pass data\n");
-                sqlCmd += " and test_time in( "
-                          + "select test_time from test_results "
-                          + "where fail_code <> 0 "
-                          + ") "
-                          + "and pass_state <> 0";
+                sqlCmd += " and t1.pass_state <> 0 and t2.fail_code <> 0";
             }
-            if (_removeFail)
+            if (Properties.Settings.Default.DefaultRemoveFailData)
             {
                 InvokeOnLog("remove fail data\n");
-                sqlCmd += " and test_time in( "
-                          + "select test_time from test_results "
-                          + "where fail_code = 0 "
-                          + ") "
-                          + "and pass_state = 0";
+                sqlCmd += " and t1.pass_state = 0 and t2.fail_code = 0";
             }
             //if (this.toolStripMenuItem_RemoveRepeats.Checked)
             //{
             //    sqlCmd += " group by product_sn)";
             //}
-            if (_removeExceptionData)
+            if (Properties.Settings.Default.DefaultRemoveSpecialData)
             {
-                sqlCmd += " and item_value>" + Properties.Settings.Default.AbnormalLowData
-                          + " and item_value<" + Properties.Settings.Default.AbnormalUpData;
+                sqlCmd += " and t1.item_value>" + Properties.Settings.Default.AbnormalLowData
+                          + " and t1.item_value<" + Properties.Settings.Default.AbnormalUpData;
 
             }
             dt = _db.GetDataTable(sqlCmd);
@@ -213,25 +163,40 @@ namespace AnaControl.Controls
             _sigma = dt.Rows[0]["stdVal"].ToString();
             _target = _average;
 
+            {
+                double a, s;
+                if (!double.TryParse(_average, out a))
+                {
+                    return;
+                }
+                if (!double.TryParse(_sigma, out s))
+                {
+                    return;
+                }
+                _p3Sigma = (a + s * 3).ToString();
+                _m3Sigma = (a - s * 3).ToString();
+            }
+
+
             sqlCmd = "SELECT item_value "
                        + "from TEST_ITEM_VALUES "
-                       + "where format(test_time,'yyyy-MM-dd HH:mm:ss')>=\"" + this._beginTime.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
-                       + "and format(test_time,'yyyy-MM-dd HH:mm:ss')<=\"" + this._endTime.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
+                       + "where test_time>=#" + Properties.Settings.Default.DefaultDateTimeStart.ToString("yyyy-MM-dd HH:mm:ss") + "# "
+                       + "and test_time<=#" + Properties.Settings.Default.DefaultDateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss") + "# "
                        + "and TEST_ITEM_NAME like '" + matchString + "'";
             InvokeOnLog("create sql command...\n");
-            if (this.toolStripMenuItem_RemoveRepeats.Checked)
+            if (Properties.Settings.Default.DefaultRemoveRepeat)
             {
                 InvokeOnLog("remove repeats\n");
                 sqlCmd += " and test_time in("
                           + " select max(test_time) "
                           + " from TEST_ITEM_VALUES "
-                          + "where format(test_time,'yyyy-MM-dd HH:mm:ss')>=\"" +
-                          this._beginTime.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
-                          + "and format(test_time,'yyyy-MM-dd HH:mm:ss')<=\"" +
-                          this._endTime.ToString("yyyy-MM-dd HH:mm:ss") + "\" "
+                          + "where test_time>=#" +
+                           Properties.Settings.Default.DefaultDateTimeStart.ToString("yyyy-MM-dd HH:mm:ss") + "# "
+                          + "and test_time<=#" +
+                           Properties.Settings.Default.DefaultDateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss") + "# "
                           + " group by product_sn)";
             }
-            if (_removePass)
+            if (Properties.Settings.Default.DefaultRemovePassData)
             {
                 InvokeOnLog("remove pass data\n");
                 sqlCmd += " and test_time in( "
@@ -240,7 +205,7 @@ namespace AnaControl.Controls
                           + ") "
                           + "and pass_state <> 0";
             }
-            if (_removeFail)
+            if (Properties.Settings.Default.DefaultRemoveFailData)
             {
                 InvokeOnLog("remove fail data\n");
                 sqlCmd += " and test_time in( "
@@ -253,7 +218,7 @@ namespace AnaControl.Controls
             //{
             //    sqlCmd += " group by product_sn)";
             //}
-            if (_removeExceptionData)
+            if (Properties.Settings.Default.DefaultRemoveRepeat)
             {
                 sqlCmd += " and item_value>" + Properties.Settings.Default.AbnormalLowData
                           + " and item_value<" + Properties.Settings.Default.AbnormalUpData;
@@ -275,10 +240,6 @@ namespace AnaControl.Controls
             {
                 try
                 {
-                    Properties.Settings.Default.DefaultDateTimeStart = this.dateTimePicker_Start.Value;
-                    Properties.Settings.Default.DefaultDateTimeEnd = this.dateTimePicker_End.Value;
-                    Properties.Settings.Default.DefaultTestItem = this.toolStripComboBox_ItemSel.Text;
-                    Properties.Settings.Default.Save();
                     this.DrawChart();
                 }
                 catch (Exception exp)
@@ -302,9 +263,9 @@ namespace AnaControl.Controls
             if (!double.TryParse(this.textBox_LSL.Text, out lsl)) return;
             if (!double.TryParse(this.textBox_USL.Text, out usl)) return;
             double average;
-            if (!double.TryParse(this.tb_Average.Text, out average)) return;
+            if (!double.TryParse(this._average, out average)) return;
             double sigma;
-            if (!double.TryParse(this.tb_Sigma.Text, out sigma)) return;
+            if (!double.TryParse(this._sigma, out sigma)) return;
             double cp = (usl - lsl) / (6 * sigma);
             double cpu = (usl - average) / (3 * sigma);
             double cpl = (average - lsl) / (3 * sigma);
@@ -323,6 +284,8 @@ namespace AnaControl.Controls
             this.tb_CPL.Text = cpl.ToString();
             this.tb_CPK.Text = cpk.ToString();
             this.tb_CA.Text = (ca * 100).ToString("f2") + @"%";
+            this.tb_Average.Text = this._average;
+            this.tb_Sigma.Text = this._sigma;
             this.tb_P3Sigma.Text = p3Sigma.ToString();
             this.tb_M3Sigma.Text = m3Sigma.ToString();
             this.textBoxDefect.Text = defect.ToString("f7") + @"%";
@@ -346,7 +309,7 @@ namespace AnaControl.Controls
 
             #region 添加标题
             this.chart1.Titles.Clear();
-            this.chart1.Titles.Add(this.toolStripComboBox_ItemSel.Text + " 正态分布");
+            this.chart1.Titles.Add(Properties.Settings.Default.DefaultTestItem + " 正态分布");
             #endregion
             #region 添加曲线
             this.chart1.Series.Add("Column");
@@ -377,7 +340,8 @@ namespace AnaControl.Controls
             #endregion 添加曲线
             #region 正态分布图
 
-            double total = double.Parse(this.tb_TotalCount.Text);
+            double total = double.Parse(this._totalCount);
+            this.tb_TotalCount.Text = _totalCount;
 
             int precision = (int)(1 - Math.Round(Math.Log10(sigma), 0));
             double center = Math.Round(average * Math.Pow(10, precision)) / Math.Pow(10, precision);
@@ -425,6 +389,7 @@ namespace AnaControl.Controls
             }
             #endregion 直方图
             #region 标准线
+
             this.chart1.Series["limit"].Points.AddXY(usl, 0, 0, yMax * 0.99);
             this.chart1.Series["limit"].Points.AddXY(lsl, 0, 0, yMax * 0.99);
             this.chart1.Series["limit"].Points[0].Label = usl.ToString("f2");
@@ -438,25 +403,6 @@ namespace AnaControl.Controls
             this.chart1.Series["Target"].Points.AddXY(double.Parse(this.textBox_Target.Text), 0, 0, yMax * 1.1);
             this.chart1.Series["Target"].Points[0].Label = this.textBox_Target.Text;
             #endregion 标准线
-        }
-
-        private void toolStripComboBox_ItemSel_TextChanged(object sender, EventArgs e)
-        {
-            if (isInitializing)
-            {
-                try
-                {
-                    Properties.Settings.Default.DefaultDateTimeStart = this.dateTimePicker_Start.Value;
-                    Properties.Settings.Default.DefaultDateTimeEnd = this.dateTimePicker_End.Value;
-                    Properties.Settings.Default.DefaultTestItem = this.toolStripComboBox_ItemSel.Text;
-                    Properties.Settings.Default.Save();
-                }
-                catch (Exception exp)
-                {
-                    this.InvokeOnLog(new MsgEventArgs(exp.Message));
-                }
-
-            }
         }
 
         private void toolStripMenuItem_Common_Click(object sender, EventArgs e)
@@ -536,52 +482,64 @@ namespace AnaControl.Controls
             Clipboard.SetText(sb.ToString());
         }
 
-        private void 去除异常数据ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AbnormalData dlg = new AbnormalData();
-            if(dlg.ShowDialog()==DialogResult.OK)
-            {
-                this.去除异常数据ToolStripMenuItem.Checked = true;
-            }
-        }
-
-        private void 产品类型选择ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void tsmHaveWildcards_Click(object sender, EventArgs e)
-        {
-            this.AutoMatch.Text = "有通配符";
-        }
-
-        private void tsmNoWildcards_Click(object sender, EventArgs e)
-        {
-            this.AutoMatch.Text = "无通配符";
-        }
-
         private void RefreshButton_Click(object sender, EventArgs e)
         {
-            DlgWaiting dlg = new DlgWaiting();
-            dlg.OnAction += dlg_OnAction;
-            dlg.ShowDialog();
+            ParameterSetting dlg = new ParameterSetting(_db);
+            if (dlg.ShowDialog(this) == DialogResult.Cancel)
+                return;
+            Properties.Settings.Default.AutoWildcard = dlg.wpf.AddWildcard;
+            Properties.Settings.Default.DefaultRemoveRepeat = dlg.wpf.RemoveRepeatData;
+            Properties.Settings.Default.DefaultRemovePassData = dlg.wpf.RemovePassData;
+            Properties.Settings.Default.DefaultRemoveFailData = dlg.wpf.RemoveFailData;
+            Properties.Settings.Default.DefaultRemoveSpecialData = dlg.wpf.RemoveExceptData;
+            Properties.Settings.Default.DefaultDateTimeStart = dlg.wpf.StartTime;
+            Properties.Settings.Default.DefaultDateTimeEnd = dlg.wpf.EndTime;
+            Properties.Settings.Default.AbnormalUpData = dlg.wpf.MaxValue;
+            Properties.Settings.Default.AbnormalLowData = dlg.wpf.MinValue;
+            Properties.Settings.Default.ProductType = dlg.wpf.ProductType;
+            Properties.Settings.Default.DefaultTestBench = dlg.wpf.TestBench;
+            Properties.Settings.Default.DefaultTestItem = dlg.wpf.TestItem;
+            this.dateTimePicker_Start.Value = dlg.wpf.StartTime;
+            this.dateTimePicker_End.Value = dlg.wpf.EndTime;
+            Properties.Settings.Default.Save();
+
+            DlgWaiting wait = new DlgWaiting();
+            wait.OnAction += dlg_OnAction;
+            wait.ShowDialog();
+
+            //this.textBox_LSL.Text = this._lsl;
+            //this.textBox_USL.Text = this._usl;
+            //this.textBox_Target.Text = this._target;
+            //this.tb_Sigma.Text = this._sigma;
+            //this.tb_M3Sigma.Text = this._m3Sigma;
+            //this.tb_P3Sigma.Text = this._p3Sigma;
+            //this.tb_Average.Text = this._average;
         }
 
         void dlg_OnAction(object sender, EventArgs e)
         {
-            this.UpdateVarialbe(false);
             this.ReadDataFromDatabase();
-            this.UpdateVarialbe(true);
+            UpdateControl();
             this.DrawChart();
+        }
+
+        private void UpdateControl()
+        {
+            if (this.InvokeRequired)
+            {
+                this.Invoke(new Action(UpdateControl));
+                return;
+            }
+            this.textBox_Target.Text = _target;
+            this.textBox_USL.Text = _usl;
+            this.textBox_LSL.Text = _lsl;
+            this.tb_Max.Text = _max;
+            this.tb_Min.Text = _min;
         }
 
         private void ParameterSetting_Click(object sender, EventArgs e)
         {
-            ParameterSetting dlg = new ParameterSetting();
-            if (dlg.ShowDialog(this) == DialogResult.OK)
-            {
-
-            }
+            RefreshButton_Click(sender, e);
         }
 
     }

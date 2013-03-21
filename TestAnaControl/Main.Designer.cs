@@ -32,16 +32,11 @@
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.总体通过率分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.指标正态分布ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.文件FToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.打开文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.合并文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.选项ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.指标分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.测试通过率分析ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.详细数据ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsMenuSelector = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -72,23 +67,11 @@
             this.statusStrip1.TabIndex = 4;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // 总体通过率分析ToolStripMenuItem
-            // 
-            this.总体通过率分析ToolStripMenuItem.Name = "总体通过率分析ToolStripMenuItem";
-            this.总体通过率分析ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.总体通过率分析ToolStripMenuItem.Text = "总体通过率分析";
-            // 
-            // 指标正态分布ToolStripMenuItem
-            // 
-            this.指标正态分布ToolStripMenuItem.Name = "指标正态分布ToolStripMenuItem";
-            this.指标正态分布ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.指标正态分布ToolStripMenuItem.Text = "指标正态分布";
-            // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.文件FToolStripMenuItem,
-            this.选项ToolStripMenuItem});
+            this.tsMenuSelector});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(784, 25);
@@ -118,38 +101,13 @@
             this.合并文件ToolStripMenuItem.Text = "合并文件";
             this.合并文件ToolStripMenuItem.Click += new System.EventHandler(this.MergeFile_Click);
             // 
-            // 选项ToolStripMenuItem
+            // tsMenuSelector
             // 
-            this.选项ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.指标分析ToolStripMenuItem,
-            this.测试通过率分析ToolStripMenuItem,
-            this.详细数据ToolStripMenuItem});
-            this.选项ToolStripMenuItem.Name = "选项ToolStripMenuItem";
-            this.选项ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
-            this.选项ToolStripMenuItem.Text = "选项";
+            this.tsMenuSelector.Name = "tsMenuSelector";
+            this.tsMenuSelector.Size = new System.Drawing.Size(44, 21);
+            this.tsMenuSelector.Text = "选项";
             // 
-            // 指标分析ToolStripMenuItem
-            // 
-            this.指标分析ToolStripMenuItem.Name = "指标分析ToolStripMenuItem";
-            this.指标分析ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.指标分析ToolStripMenuItem.Text = "指标分析";
-            this.指标分析ToolStripMenuItem.Click += new System.EventHandler(this.指标分析ToolStripMenuItem_Click);
-            // 
-            // 测试通过率分析ToolStripMenuItem
-            // 
-            this.测试通过率分析ToolStripMenuItem.Name = "测试通过率分析ToolStripMenuItem";
-            this.测试通过率分析ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.测试通过率分析ToolStripMenuItem.Text = "测试通过率分析";
-            this.测试通过率分析ToolStripMenuItem.Click += new System.EventHandler(this.测试通过率分析ToolStripMenuItem_Click);
-            // 
-            // 详细数据ToolStripMenuItem
-            // 
-            this.详细数据ToolStripMenuItem.Name = "详细数据ToolStripMenuItem";
-            this.详细数据ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.详细数据ToolStripMenuItem.Text = "详细数据";
-            this.详细数据ToolStripMenuItem.Click += new System.EventHandler(this.详细数据ToolStripMenuItem_Click);
-            // 
-            // Main
+            // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -160,7 +118,7 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "Main";
+            this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "TestResultAnalyzer";
             this.Load += new System.EventHandler(this.MainForm_Load);
@@ -176,16 +134,11 @@
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.ToolStripMenuItem 总体通过率分析ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 指标正态分布ToolStripMenuItem;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem 文件FToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 打开文件ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 合并文件ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 选项ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 指标分析ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 测试通过率分析ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 详细数据ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tsMenuSelector;
 
 
 

@@ -190,5 +190,17 @@ namespace AnaControl.Properties {
                 this["DefaultRemoveSpecialData"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DefaultTestBench {
+            get {
+                return ((string)(this["DefaultTestBench"]));
+            }
+            set {
+                this["DefaultTestBench"] = value;
+            }
+        }
     }
 }
