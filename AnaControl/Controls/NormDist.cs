@@ -112,7 +112,9 @@ namespace AnaControl.Controls
                             + "and t2.test_time<=#" +
                             Properties.Settings.Default.DefaultDateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss") + "# "
                             + "and t1.TEST_ITEM_NAME like '" + matchString + "' "
-                            + "and t1.PRODUCT_SN = t2.PRODUCT_SN and t1.TEST_TIME=t2.TEST_TIME ";
+                            + "and t1.PRODUCT_SN = t2.PRODUCT_SN and t1.TEST_TIME=t2.TEST_TIME "
+                            + "and t2.STATION like '%" + Properties.Settings.Default.DefaultTestBench + "%' "
+                            + "and t2.PRODUCT_NAME like '%" + Properties.Settings.Default.ProductType + "%' ";
             InvokeOnLog("create sql cmd...\n");
             if (Properties.Settings.Default.DefaultRemoveRepeat)
             {
@@ -178,18 +180,23 @@ namespace AnaControl.Controls
             }
 
 
-            sqlCmd = "SELECT item_value "
-                       + "from TEST_ITEM_VALUES "
-                       + "where test_time>=#" + Properties.Settings.Default.DefaultDateTimeStart.ToString("yyyy-MM-dd HH:mm:ss") + "# "
-                       + "and test_time<=#" + Properties.Settings.Default.DefaultDateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss") + "# "
-                       + "and TEST_ITEM_NAME like '" + matchString + "'";
+            sqlCmd = "SELECT t1.item_value "
+                        + "from TEST_ITEM_VALUES t1, TEST_RESULTS t2 "
+                        + "where t2.test_time>=#" +
+                        Properties.Settings.Default.DefaultDateTimeStart.ToString("yyyy-MM-dd HH:mm:ss") + "# "
+                        + "and t2.test_time<=#" +
+                        Properties.Settings.Default.DefaultDateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss") + "# "
+                        + "and t1.TEST_ITEM_NAME like '" + matchString + "' "
+                        + "and t1.PRODUCT_SN = t2.PRODUCT_SN and t1.TEST_TIME=t2.TEST_TIME "
+                        + "and t2.STATION like '%" + Properties.Settings.Default.DefaultTestBench + "%' "
+                        + "and t2.PRODUCT_NAME like '%" + Properties.Settings.Default.ProductType + "%' ";
             InvokeOnLog("create sql command...\n");
             if (Properties.Settings.Default.DefaultRemoveRepeat)
             {
                 InvokeOnLog("remove repeats\n");
-                sqlCmd += " and test_time in("
+                sqlCmd += " and t1.test_time in("
                           + " select max(test_time) "
-                          + " from TEST_ITEM_VALUES "
+                          + " from test_results "
                           + "where test_time>=#" +
                            Properties.Settings.Default.DefaultDateTimeStart.ToString("yyyy-MM-dd HH:mm:ss") + "# "
                           + "and test_time<=#" +
@@ -199,29 +206,21 @@ namespace AnaControl.Controls
             if (Properties.Settings.Default.DefaultRemovePassData)
             {
                 InvokeOnLog("remove pass data\n");
-                sqlCmd += " and test_time in( "
-                          + "select test_time from test_results "
-                          + "where fail_code <> 0 "
-                          + ") "
-                          + "and pass_state <> 0";
+                sqlCmd += " and t1.pass_state <> 0 and t2.fail_code <> 0";
             }
             if (Properties.Settings.Default.DefaultRemoveFailData)
             {
                 InvokeOnLog("remove fail data\n");
-                sqlCmd += " and test_time in( "
-                          + "select test_time from test_results "
-                          + "where fail_code = 0 "
-                          + ") "
-                          + "and pass_state = 0";
+                sqlCmd += " and t1.pass_state = 0 and t2.fail_code = 0";
             }
             //if (this.toolStripMenuItem_RemoveRepeats.Checked)
             //{
             //    sqlCmd += " group by product_sn)";
             //}
-            if (Properties.Settings.Default.DefaultRemoveRepeat)
+            if (Properties.Settings.Default.DefaultRemoveSpecialData)
             {
-                sqlCmd += " and item_value>" + Properties.Settings.Default.AbnormalLowData
-                          + " and item_value<" + Properties.Settings.Default.AbnormalUpData;
+                sqlCmd += " and t1.item_value>" + Properties.Settings.Default.AbnormalLowData
+                          + " and t1.item_value<" + Properties.Settings.Default.AbnormalUpData;
 
             }
             dt.Clear();

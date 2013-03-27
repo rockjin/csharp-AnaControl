@@ -19,9 +19,9 @@ namespace AnaControl.Controls
             {
                 components.Dispose();
             }
-            if(_db.Conn!=null && _db.Conn.State!=ConnectionState.Closed)
+            if(_db != null)
             {
-                _db.DisConnect();
+                _db.Dispose();
             }
             base.Dispose(disposing);
         }

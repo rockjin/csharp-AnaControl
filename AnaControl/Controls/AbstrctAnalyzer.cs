@@ -42,7 +42,14 @@ namespace AnaControl.Controls
 
         private void dlg_OnAction(object sender, EventArgs e)
         {
-            RefreshChart();
+            try
+            {
+                RefreshChart();
+            }
+            catch (Exception exp)
+            {
+                this.InvokeOnLog(new EventArgsWithMsg(exp.Message));
+            }
         }
 
         private void tsbSaveChart_Click(object sender, EventArgs e)
@@ -221,6 +228,19 @@ namespace AnaControl.Controls
                 }
             }
             return types.ToArray();
+        }
+    }
+
+    public class EventArgsWithMsg : EventArgs
+    {
+        private string _msg;
+        public EventArgsWithMsg(string msg)
+        {
+            _msg = msg;
+        }
+        public override string ToString()
+        {
+            return _msg;
         }
     }
 }

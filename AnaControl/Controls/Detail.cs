@@ -29,22 +29,22 @@ namespace AnaControl
         }
         private void comboBoxFunction_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(this.comboBoxFunction.Text=="总数")
-            {
-                this.richTextBoxSqlCmd.Text = _db.GetTotalCountSql();
-            }
-            else if (this.comboBoxFunction.Text == "PASS数量")
-            {
-                this.richTextBoxSqlCmd.Text = _db.GetPassCountSql();
-            }
-            else if (this.comboBoxFunction.Text == "FAIL数量")
-            {
-                this.richTextBoxSqlCmd.Text = _db.GetFailCountSql();
-            }
-            else
-            {
+            //if(this.comboBoxFunction.Text=="总数")
+            //{
+            //    this.richTextBoxSqlCmd.Text = _db.GetTotalCountSql();
+            //}
+            //else if (this.comboBoxFunction.Text == "PASS数量")
+            //{
+            //    this.richTextBoxSqlCmd.Text = _db.GetPassCountSql();
+            //}
+            //else if (this.comboBoxFunction.Text == "FAIL数量")
+            //{
+            //    this.richTextBoxSqlCmd.Text = _db.GetFailCountSql();
+            //}
+            //else
+            //{
                 
-            }
+            //}
         }
 
         private void buttonExecute_Click(object sender, EventArgs e)

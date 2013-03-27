@@ -22,12 +22,12 @@ using AnaControl.Dlgs;
 using AnaControl.Utils;
 using System.ComponentModel;
 
-namespace AnaControl.Controls.Capacitys
+namespace AnaControl.Controls.FpyCapacitys
 {
-    [DisplayName("产能分析")]
-    public partial class Capacity : AbstrctAnalyzer
+    [DisplayName("一次通过率分析")]
+    public partial class FpyCapacity : AbstrctAnalyzer
     {
-        public Capacity()
+        public FpyCapacity()
         {
             InitializeComponent();
         }
@@ -42,7 +42,7 @@ namespace AnaControl.Controls.Capacitys
                 this.chart1.Legends.Clear();
                 this.chart1.ChartAreas.Add("capacity");
                 this.chart1.ChartAreas[0].BackColor = SystemColors.AppWorkspace;
-                this.chart1.ChartAreas[0].AxisX.Title = "产能分析";
+                this.chart1.ChartAreas[0].AxisX.Title = "一次通过率分析";
                 this.chart1.Series.Clear();
                 SeriesChartType sct =
                     (SeriesChartType)Enum.Parse(typeof(SeriesChartType), Properties.Settings.Default.DefaultChartType);
@@ -68,9 +68,10 @@ namespace AnaControl.Controls.Capacitys
                 s = s > _lastestRecordTime ? _lastestRecordTime : s;
                 _db.time_start = s;
                 _db.time_end = (s + tsStep) < _lastestRecordTime ? (s + tsStep) : _lastestRecordTime;
-                int count;
+                int count, totalCount;
                 int val = this.chart1.Series["Total"].Points.Count;
                 _db.GetTotalCount(out count);
+                totalCount = count;
                 this.Invoke(new Action(delegate()
                 {
                     this.chart1.Series["Total"].Points.Add(count);
@@ -78,7 +79,7 @@ namespace AnaControl.Controls.Capacitys
                     this.chart1.Series["Total"].Points[val].AxisLabel = s.ToString() + "\n" + _db.time_end.ToString();
                 }));
 
-                _db.GetPassCount(out count);
+                _db.GetFPYCount(out count);
                 this.Invoke(new Action(delegate()
                 {
                     this.chart1.Series["Pass"].Points.Add(count);
@@ -86,7 +87,7 @@ namespace AnaControl.Controls.Capacitys
                     this.chart1.Series["Pass"].Points[val].AxisLabel = s.ToString() + "\n" + _db.time_end.ToString();
                 }));
 
-                _db.GetFailCount(out count);
+                count = totalCount - count;
                 this.Invoke(new Action(delegate()
                 {
                     this.chart1.Series["Fail"].Points.Add(count);
@@ -121,34 +122,21 @@ namespace AnaControl.Controls.Capacitys
                 {
                     this.chart1.ChartAreas.Add("c" + i.ToString());
                     this.chart1.ChartAreas[i].BackColor = SystemColors.AppWorkspace;
-                    this.chart1.ChartAreas[i].AxisX.Title = "产能分析";
+                    this.chart1.ChartAreas[i].AxisX.Title = "一次通过率分析";
                     SeriesChartType sct =
                         (SeriesChartType)Enum.Parse(typeof(SeriesChartType), Properties.Settings.Default.DefaultChartType);
                     this.chart1.Series.Add(new Series("Total" + i.ToString()));
                     this.chart1.Series["Total" + i.ToString()].ChartArea = this.chart1.ChartAreas[i].Name;
                     this.chart1.Series["Total" + i.ToString()].ChartType = sct;
                 }));
-                //this.chart1.Series.Add(new Series("Pass" + i.ToString()));
-                //this.chart1.Series["Pass" + i.ToString()].ChartArea = this.chart1.ChartAreas[i].Name;
-                //this.chart1.Series["Pass" + i.ToString()].ChartType = sct;
-                //this.chart1.Series.Add(new Series("Fail" + i.ToString()));
-                //this.chart1.Series["Fail" + i.ToString()].ChartArea = this.chart1.ChartAreas[i].Name;
-                //this.chart1.Series["Fail" + i.ToString()].ChartType = sct;
-                //this.chart1.Series["Total" + i.ToString()].Points.Clear();
-                //this.chart1.Series["Pass" + i.ToString()].Points.Clear();
-                //this.chart1.Series["Fail" + i.ToString()].Points.Clear();
-
-                //this.chart1.Series["Total" + i.ToString()].Color = Color.Brown;
-                //this.chart1.Series["Pass" + i.ToString()].Color = Color.Green;
-                //this.chart1.Series["Fail" + i.ToString()].Color = Color.Red;
-
 
                 s = s > _lastestRecordTime ? _lastestRecordTime : s;
                 _db.time_start = s;
                 _db.time_end = (s + tsStep) < _lastestRecordTime ? (s + tsStep) : _lastestRecordTime;
-                int count;
+                int count, totalCount;
                 int val = this.chart1.Series["Total" + i.ToString()].Points.Count;
                 _db.GetTotalCount(out count);
+                totalCount = count;
                 this.Invoke(new Action(delegate()
                 {
                     this.chart1.Series["Total" + i.ToString()].Points.Add(count);
@@ -157,7 +145,7 @@ namespace AnaControl.Controls.Capacitys
                     this.chart1.Series["Total" + i.ToString()].Points[val].AxisLabel = s.ToString() + "\n" + _db.time_end.ToString();
                 }));
 
-                _db.GetPassCount(out count);
+                _db.GetFPYCount(out count);
                 this.Invoke(new Action(delegate()
                 {
                     val = this.chart1.Series["Total" + i.ToString()].Points.Count;
@@ -167,7 +155,7 @@ namespace AnaControl.Controls.Capacitys
                     this.chart1.Series["Total" + i.ToString()].Points[val].AxisLabel = s.ToString() + "\n" + _db.time_end.ToString();
                 }));
 
-                _db.GetFailCount(out count);
+                count = totalCount - count;
                 this.Invoke(new Action(delegate()
                 {
                     val = this.chart1.Series["Total" + i.ToString()].Points.Count;
@@ -229,7 +217,7 @@ namespace AnaControl.Controls.Capacitys
         protected override void Setting()
         {
             base.Setting();
-            CapacitySettings dlg = new CapacitySettings();
+            FpyCapacitySettings dlg = new FpyCapacitySettings();
             if (dlg.ShowDialog(this) == DialogResult.Cancel) return;
             if (this._db != null)
             {
