@@ -40,6 +40,7 @@
             this.toolStripMenuItem_Save = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItem_3d = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemChartTypes = new System.Windows.Forms.ToolStripMenuItem();
+            this.TsbShowValueLabel = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.contextMenuStrip_msChart.SuspendLayout();
@@ -109,30 +110,38 @@
             this.contextMenuStrip_msChart.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem_Save,
             this.ToolStripMenuItem_3d,
-            this.menuItemChartTypes});
+            this.menuItemChartTypes,
+            this.TsbShowValueLabel});
             this.contextMenuStrip_msChart.Name = "contextMenuStrip_msChart";
-            this.contextMenuStrip_msChart.Size = new System.Drawing.Size(125, 70);
+            this.contextMenuStrip_msChart.Size = new System.Drawing.Size(153, 114);
             this.contextMenuStrip_msChart.Text = "Save";
             // 
             // toolStripMenuItem_Save
             // 
             this.toolStripMenuItem_Save.Name = "toolStripMenuItem_Save";
-            this.toolStripMenuItem_Save.Size = new System.Drawing.Size(124, 22);
+            this.toolStripMenuItem_Save.Size = new System.Drawing.Size(152, 22);
             this.toolStripMenuItem_Save.Text = "Save";
             this.toolStripMenuItem_Save.Click += new System.EventHandler(this.toolStripMenuItem_Save_Click);
             // 
             // ToolStripMenuItem_3d
             // 
             this.ToolStripMenuItem_3d.Name = "ToolStripMenuItem_3d";
-            this.ToolStripMenuItem_3d.Size = new System.Drawing.Size(124, 22);
+            this.ToolStripMenuItem_3d.Size = new System.Drawing.Size(152, 22);
             this.ToolStripMenuItem_3d.Text = "3D";
             this.ToolStripMenuItem_3d.Click += new System.EventHandler(this.ToolStripMenuItem_3d_Click);
             // 
             // menuItemChartTypes
             // 
             this.menuItemChartTypes.Name = "menuItemChartTypes";
-            this.menuItemChartTypes.Size = new System.Drawing.Size(124, 22);
+            this.menuItemChartTypes.Size = new System.Drawing.Size(152, 22);
             this.menuItemChartTypes.Text = "曲线类型";
+            // 
+            // TsbShowValueLabel
+            // 
+            this.TsbShowValueLabel.Name = "TsbShowValueLabel";
+            this.TsbShowValueLabel.Size = new System.Drawing.Size(152, 22);
+            this.TsbShowValueLabel.Text = "显示标签值";
+            this.TsbShowValueLabel.Click += new System.EventHandler(this.TsbShowValueLabel_Click);
             // 
             // AbstrctAnalyzer
             // 
@@ -162,5 +171,6 @@
         protected System.Windows.Forms.ToolStripMenuItem toolStripMenuItem_Save;
         protected System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_3d;
         protected System.Windows.Forms.ToolStripMenuItem menuItemChartTypes;
+        private System.Windows.Forms.ToolStripMenuItem TsbShowValueLabel;
     }
 }

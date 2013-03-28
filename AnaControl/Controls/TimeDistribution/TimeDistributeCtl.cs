@@ -89,6 +89,7 @@ namespace AnaControl.Controls.TimeDistribution
                 this.Invoke(new Action(delegate()
                 {
                     this.chart1.Series.Add(row[0].ToString().Trim());
+                    this.chart1.Series[row[0].ToString().Trim()].Color = NextColor();
                     this.chart1.Series[row[0].ToString().Trim()].ChartType = (SeriesChartType)Enum.Parse(typeof(SeriesChartType), Properties.Settings.Default.DefaultChartType);
                 }));
             }
@@ -127,6 +128,11 @@ namespace AnaControl.Controls.TimeDistribution
                                     this.chart1.Series[typeName].Points.Count - 1].SetValueY((double)row["USED_TIME"]);
                                 this.chart1.Series[typeName].Points[
                                     this.chart1.Series[typeName].Points.Count - 1].BorderWidth = 5;
+                                if (Properties.Settings.Default.DefaultShowValues)
+                                {
+                                    this.chart1.Series[typeName].Points[
+                                       this.chart1.Series[typeName].Points.Count - 1].Label = row["USED_TIME"].ToString();
+                                }
 
                             }));
                     }
