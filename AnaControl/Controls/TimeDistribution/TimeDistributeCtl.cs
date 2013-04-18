@@ -153,6 +153,7 @@ namespace AnaControl.Controls.TimeDistribution
                             this.chart1.Series[tmi.Name].IsVisibleInLegend = tmi.Checked;
                         }
                     };
+
                 mi.DropDownItems.Add(tsb);
             }
         }
