@@ -20,6 +20,7 @@ namespace AnaControl.Controls
         protected static int _rotateColor = (int)KnownColor.Red;
         protected DateTime _lastestRecordTime = Properties.Settings.Default.DefaultDateTimeEnd;
         protected DateTime _firstRecordTime = Properties.Settings.Default.DefaultDateTimeStart;
+        protected List<ToolStripItem> _contentMenuEx = new List<ToolStripItem>();
 
         public AbstrctAnalyzer()
         {
@@ -38,6 +39,13 @@ namespace AnaControl.Controls
             DlgWaiting wait = new DlgWaiting();
             wait.OnAction += dlg_OnAction;
             wait.ShowDialog();
+            foreach (ToolStripItem mi in _contentMenuEx)
+            {
+                if (!this.contextMenuStrip_msChart.Items.ContainsKey(mi.Name))
+                {
+                    this.contextMenuStrip_msChart.Items.Add(mi);
+                }
+            }
         }
 
         private void dlg_OnAction(object sender, EventArgs e)

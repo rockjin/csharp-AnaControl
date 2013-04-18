@@ -29,24 +29,20 @@ namespace AnaControl.Controls.TimeDistribution
 
         protected override void RefreshChart()
         {
-            List<DateTime> types = new List<DateTime>();
-            string sqlCmd = "select distinct(t1.TEST_TIME) from TEST_TIME_DISTRIBUTION t1,"
+            List<long> types = new List<long>();
+            string sqlCmd = "select distinct(t1.TEST_ID) from TEST_TIME_DISTRIBUTION t1,"
                 + "test_results t2 "
-                + "where t1.test_time >= "
+                + "where t2.test_time >= "
                 + "#" + Properties.Settings.Default.DefaultDateTimeStart.ToString("yyyy-MM-dd HH:mm:ss") + "#"
-                + "and t1.test_time < "
+                + "and t2.test_time < "
                 + "#" + Properties.Settings.Default.DefaultDateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss") + "#"
-                + "and t1.product_sn = t2.product_sn "
-                + "and t1.test_time = t2.test_time "
+                + "and t1.test_id = t2.test_id "
                 + "and t2.STATION like '%" + Properties.Settings.Default.DefaultTestBench + "%' "
                 + "and t2.PRODUCT_NAME like '%" + Properties.Settings.Default.ProductType + "%' ";
             DataTable dt = _db.GetDataTable(sqlCmd);
             foreach (DataRow row in dt.Rows)
             {
-                if (row["TEST_TIME"] is DateTime)
-                {
-                    types.Add((DateTime)row["TEST_TIME"]);
-                }
+                types.Add((long)row["TEST_ID"]);
             }
             dt.Dispose();
 
@@ -74,12 +70,11 @@ namespace AnaControl.Controls.TimeDistribution
 
             sqlCmd = "select distinct(ITEM_NAME) from TEST_TIME_DISTRIBUTION t1,"
                 + "test_results t2 "
-                + "where t1.test_time >= "
+                + "where t2.test_time >= "
                 + "#" + Properties.Settings.Default.DefaultDateTimeStart.ToString("yyyy-MM-dd HH:mm:ss") + "#"
-                + "and t1.test_time < "
+                + "and t2.test_time < "
                 + "#" + Properties.Settings.Default.DefaultDateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss") + "#"
-                + "and t1.product_sn = t2.product_sn "
-                + "and t1.test_time = t2.test_time "
+                + "and t1.test_id = t2.test_id "
                 + "and t2.STATION like '%" + Properties.Settings.Default.DefaultTestBench + "%' "
                 + "and t2.PRODUCT_NAME like '%" + Properties.Settings.Default.ProductType + "%' "
                 + "and t1.item_name <> 'TotalTime' ";
@@ -95,18 +90,17 @@ namespace AnaControl.Controls.TimeDistribution
             }
             dt.Dispose();
 
-            foreach (DateTime tt in types)
+            foreach (int tt in types)
             {
                 sqlCmd = "select t1.* from TEST_TIME_DISTRIBUTION t1,"
                     + "test_results t2 "
-                    + "where t1.test_time = ? "
-                    + "and t1.product_sn = t2.product_sn "
-                    + "and t1.test_time = t2.test_time "
+                    + "where t1.test_id = ? "
+                    + "and t1.test_id = t2.test_id "
                     + "and t2.STATION like '%" + Properties.Settings.Default.DefaultTestBench + "%' "
                     + "and t2.PRODUCT_NAME like '%" + Properties.Settings.Default.ProductType + "%' ";
                 using (OleDbCommand odc = new OleDbCommand(sqlCmd, _db.Conn))
                 {
-                    odc.Parameters.Add("@1", OleDbType.Date);
+                    odc.Parameters.Add("@1", OleDbType.Integer);
                     odc.Parameters[0].Value = tt;
                     OleDbDataAdapter oda = new OleDbDataAdapter(odc);
                     dt = new DataTable("DISTRIBUTION");
@@ -138,6 +132,30 @@ namespace AnaControl.Controls.TimeDistribution
                     }
                 }
             }
+            AddMenuItems();
+        }//End RefreshChart
+
+        private void AddMenuItems()
+        {
+            this._contentMenuEx.Clear();
+            ToolStripMenuItem mi = new ToolStripMenuItem("曲线类型");
+            this._contentMenuEx.Add(mi);
+            foreach (Series si in chart1.Series)
+            {
+                ToolStripMenuItem tsb = new ToolStripMenuItem(si.Name);
+                tsb.Checked = true;
+                tsb.Click += (obj, args) =>
+                    {
+                        ToolStripMenuItem tmi = obj as ToolStripMenuItem;
+                        if (tmi == null) return;
+                        if (this.chart1.Series.FindByName(tmi.Text) != null)
+                        {
+                            this.chart1.Series[tmi.Name].IsVisibleInLegend = tmi.Checked;
+                        }
+                    };
+                mi.DropDownItems.Add(tsb);
+            }
         }
+
     }
 }
