@@ -175,13 +175,17 @@ namespace AnaControl.Controls
                     item.Checked = false;
                 }
                 (sender as ToolStripMenuItem).Checked = true;
-                DlgWaiting wait = new DlgWaiting();
-                wait.OnAction += dlg_OnAction;
-                wait.ShowDialog();
+                foreach (Series se in chart1.Series)
+                {
+                    se.ChartType = t;
+                }
+                foreach (Series s in _bkSeries)
+                {
+                    s.ChartType = t;
+                }
             }
             catch (System.Exception ee)
             {
-                this.chart1 = new Chart();
                 InvokeOnLog((MsgEventArgs)ee.Message);
             }
             return;
@@ -203,6 +207,8 @@ namespace AnaControl.Controls
                 InvokeOnLog((MsgEventArgs)ee.Message);
             }
         }
+
+        protected List<Series> _bkSeries = new List<Series>();
     }
 
     public static class AnaFactory

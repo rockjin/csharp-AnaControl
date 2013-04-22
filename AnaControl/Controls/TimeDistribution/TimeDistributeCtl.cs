@@ -79,10 +79,13 @@ namespace AnaControl.Controls.TimeDistribution
                 + "and t2.PRODUCT_NAME like '%" + Properties.Settings.Default.ProductType + "%' "
                 + "and t1.item_name <> 'TotalTime' ";
             dt = _db.GetDataTable(sqlCmd);
+            Dictionary<string, double> testValues = new Dictionary<string, double>();
+            testValues.Add("TotalTime", 0);
             foreach (DataRow row in dt.Rows)
             {
                 this.Invoke(new Action(delegate()
                 {
+                    testValues.Add(row[0].ToString().Trim(), 0);
                     this.chart1.Series.Add(row[0].ToString().Trim());
                     this.chart1.Series[row[0].ToString().Trim()].Color = NextColor();
                     this.chart1.Series[row[0].ToString().Trim()].ChartType = (SeriesChartType)Enum.Parse(typeof(SeriesChartType), Properties.Settings.Default.DefaultChartType);
@@ -122,6 +125,7 @@ namespace AnaControl.Controls.TimeDistribution
                                     this.chart1.Series[typeName].Points.Count - 1].SetValueY((double)row["USED_TIME"]);
                                 this.chart1.Series[typeName].Points[
                                     this.chart1.Series[typeName].Points.Count - 1].BorderWidth = 5;
+                                testValues[typeName] += (double)row["USED_TIME"];
                                 if (Properties.Settings.Default.DefaultShowValues)
                                 {
                                     this.chart1.Series[typeName].Points[
@@ -130,7 +134,22 @@ namespace AnaControl.Controls.TimeDistribution
 
                             }));
                     }
+                    foreach (Series se in chart1.Series)
+                    {
+                        this.Invoke(new Action(() =>
+                            {
+                                se.LegendText = string.Format("{0} ({1}%)"
+                                    , se.Name
+                                    , (testValues[se.Name] / testValues["TotalTime"] * 100).ToString("0.00"));
+                            }));
+
+                    }
                 }
+            }
+            
+            foreach (Series se in chart1.Series)
+            {
+                
             }
             AddMenuItems();
         }//End RefreshChart
@@ -147,16 +166,35 @@ namespace AnaControl.Controls.TimeDistribution
                 tsb.Click += (obj, args) =>
                     {
                         ToolStripMenuItem tmi = obj as ToolStripMenuItem;
+                        tmi.Checked = !tmi.Checked;
                         if (tmi == null) return;
-                        if (this.chart1.Series.FindByName(tmi.Text) != null)
+                        if (tmi.Checked)
                         {
-                            this.chart1.Series[tmi.Name].IsVisibleInLegend = tmi.Checked;
+                            Series se = _bkSeries.Find(s => s.Name == tmi.Text);
+                            if (se != null)
+                            {
+                                if (!chart1.Series.Contains(se))
+                                {
+                                    chart1.Series.Add(se);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Series se = chart1.Series.FindByName(tmi.Text);
+                            if (se != null)
+                            {
+                                if(!_bkSeries.Contains(se))
+                                {
+                                    _bkSeries.Add(se);
+                                }
+                            }
+                            chart1.Series.Remove(se);
                         }
                     };
 
                 mi.DropDownItems.Add(tsb);
             }
         }
-
     }
 }
