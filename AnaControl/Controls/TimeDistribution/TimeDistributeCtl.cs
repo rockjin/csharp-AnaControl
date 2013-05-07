@@ -42,7 +42,7 @@ namespace AnaControl.Controls.TimeDistribution
             DataTable dt = _db.GetDataTable(sqlCmd);
             foreach (DataRow row in dt.Rows)
             {
-                types.Add((long)row["TEST_ID"]);
+                types.Add(long.Parse(row["TEST_ID"].ToString()));
             }
             dt.Dispose();
 
@@ -122,10 +122,10 @@ namespace AnaControl.Controls.TimeDistribution
                         this.Invoke(new Action(delegate()
                             {
                                 this.chart1.Series[typeName].Points[
-                                    this.chart1.Series[typeName].Points.Count - 1].SetValueY((double)row["USED_TIME"]);
+                                    this.chart1.Series[typeName].Points.Count - 1].SetValueY(double.Parse(row["USED_TIME"].ToString()));
                                 this.chart1.Series[typeName].Points[
                                     this.chart1.Series[typeName].Points.Count - 1].BorderWidth = 5;
-                                testValues[typeName] += (double)row["USED_TIME"];
+                                testValues[typeName] += double.Parse(row["USED_TIME"].ToString());
                                 if (Properties.Settings.Default.DefaultShowValues)
                                 {
                                     this.chart1.Series[typeName].Points[
@@ -159,6 +159,42 @@ namespace AnaControl.Controls.TimeDistribution
             this._contentMenuEx.Clear();
             ToolStripMenuItem mi = new ToolStripMenuItem("曲线类型");
             this._contentMenuEx.Add(mi);
+            ToolStripMenuItem allItem = new ToolStripMenuItem("全选");
+            allItem.Checked = true;
+            allItem.Click += (sender, args) =>
+                {
+                    allItem.Checked = !allItem.Checked;
+                    if (!allItem.Checked)
+                    {
+                        foreach (Series se in chart1.Series)
+                        {
+                            if (!_bkSeries.Contains(se))
+                            {
+                                _bkSeries.Add(se);
+                            }
+                        }
+                        chart1.Series.Clear();
+                        foreach (ToolStripMenuItem tmp in mi.DropDownItems)
+                        {
+                            tmp.Checked = false;
+                        }
+                    }
+                    else
+                    {
+                        foreach (Series se in _bkSeries)
+                        {
+                            if (!chart1.Series.Contains(se))
+                            {
+                                chart1.Series.Add(se);
+                            }
+                        }
+                        foreach (ToolStripMenuItem tmp in mi.DropDownItems)
+                        {
+                            tmp.Checked = true;
+                        }
+                    }
+                };
+            mi.DropDownItems.Insert(0, allItem);
             foreach (Series si in chart1.Series)
             {
                 ToolStripMenuItem tsb = new ToolStripMenuItem(si.Name);

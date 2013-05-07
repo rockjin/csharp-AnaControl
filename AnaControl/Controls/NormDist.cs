@@ -152,14 +152,8 @@ namespace AnaControl.Controls
             InvokeOnLog("query sucess\n");
             _max = dt.Rows[0]["maxVal"].ToString();
             _min = dt.Rows[0]["minVal"].ToString();
-            if (dt.Rows[0]["lowLimit"] is double)
-            {
-                _lsl = double.IsInfinity((double)dt.Rows[0]["lowLimit"]) ? "-100" : dt.Rows[0]["lowLimit"].ToString();
-            }
-            if (dt.Rows[0]["upLimit"] is double)
-            {
-                _usl = double.IsInfinity((double)dt.Rows[0]["upLimit"]) ? "100" : dt.Rows[0]["upLimit"].ToString();
-            }
+            _lsl = double.IsInfinity(double.Parse(dt.Rows[0]["lowLimit"].ToString())) ? "-100" : dt.Rows[0]["lowLimit"].ToString();
+            _usl = double.IsInfinity(double.Parse(dt.Rows[0]["upLimit"].ToString())) ? "100" : dt.Rows[0]["upLimit"].ToString();
             _totalCount = dt.Rows[0]["totalVal"].ToString();
             _average = dt.Rows[0]["avgVal"].ToString();
             _sigma = dt.Rows[0]["stdVal"].ToString();
@@ -228,7 +222,7 @@ namespace AnaControl.Controls
             this._data = new double[dt.Rows.Count];
             for (int i = 0; i < _data.Length; i++)
             {
-                this._data[i] = (double)dt.Rows[i]["item_value"];
+                this._data[i] = double.Parse(dt.Rows[i]["item_value"].ToString());
             }
 
         }

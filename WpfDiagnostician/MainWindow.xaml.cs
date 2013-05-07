@@ -41,7 +41,29 @@ namespace WpfDiagnostician
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            obj = new MyDel(test);
+        }
+
+        void listBox1_Drop(object sender, DragEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+        public MyDel obj;
+        private void test()
+        {
+        }
+        private void test1()
+        {
+        }
+        public delegate void MyDel();
+    }
+
+    class Test
+    {
+        public void cc()
+        {
+            MainWindow obj = new MainWindow();
+            obj.obj += new MainWindow.MyDel(cc);
         }
     }
 }
