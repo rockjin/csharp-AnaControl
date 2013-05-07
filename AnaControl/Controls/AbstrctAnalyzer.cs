@@ -11,6 +11,7 @@ using System.Diagnostics;
 using DbDriver;
 using System.Windows.Forms.DataVisualization.Charting;
 using AnaControl.Utils;
+using System.IO;
 
 namespace AnaControl.Controls
 {
@@ -35,7 +36,7 @@ namespace AnaControl.Controls
 
         private void tsbDrawChart_Click(object sender, EventArgs e)
         {
-            Setting();
+            if (!Setting()) return;
             DlgWaiting wait = new DlgWaiting();
             wait.OnAction += dlg_OnAction;
             wait.ShowDialog();
@@ -82,7 +83,7 @@ namespace AnaControl.Controls
             }
         }
 
-        protected virtual void Setting() { }
+        protected virtual bool Setting() { return false; }
         protected virtual void RefreshChart() { }
 
         public event EventHandler OnLog;
@@ -209,6 +210,72 @@ namespace AnaControl.Controls
         }
 
         protected List<Series> _bkSeries = new List<Series>();
+
+        private void miSaveData_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "xls|*.xls";
+                sfd.FileName = "temp.xls";
+                if (sfd.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+                StreamWriter fs = new StreamWriter(sfd.FileName,false,Encoding.Unicode);
+                if (chart1.Series.Count == 0) return;
+                foreach(Series si in chart1.Series)
+                {
+                    fs.Write(si.Name + "\t");
+                }
+                fs.WriteLine();
+                for(int i=0;i<chart1.Series[0].Points.Count;i++)
+                {
+                    foreach (Series si in chart1.Series)
+                    {
+                        fs.Write(si.Points[i].YValues[0].ToString() + "\t");
+                    }
+                    fs.WriteLine();
+                }
+                fs.Flush();
+                fs.Close();
+            }
+            catch (Exception exp)
+            {
+                InvokeOnLog(new MsgEventArgs(exp.Message));
+            }
+        }
+
+        private void miCopyData_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                MemoryStream ms = new MemoryStream();
+                StreamWriter fs = new StreamWriter(ms,Encoding.Unicode);
+                if (chart1.Series.Count == 0) return;
+                foreach (Series si in chart1.Series)
+                {
+                    fs.Write(si.Name + "\t");
+                }
+                fs.WriteLine();
+                for (int i = 0; i < chart1.Series[0].Points.Count; i++)
+                {
+                    foreach (Series si in chart1.Series)
+                    {
+                        fs.Write(si.Points[i].YValues[0].ToString() + "\t");
+                    }
+                    fs.WriteLine();
+                }
+                fs.Flush();
+                fs.Close();
+                Clipboard.SetText(Encoding.Unicode.GetString(ms.ToArray()));
+                ms.Close();
+            }
+            catch (Exception exp)
+            {
+                InvokeOnLog(new MsgEventArgs(exp.Message));
+            }
+        }
     }
 
     public static class AnaFactory

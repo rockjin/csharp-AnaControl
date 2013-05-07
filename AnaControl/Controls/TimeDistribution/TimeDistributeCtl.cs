@@ -20,11 +20,13 @@ namespace AnaControl.Controls.TimeDistribution
             InitializeComponent();
         }
 
-        protected override void Setting()
+        protected override bool Setting()
         {
             TimeDistributeSettings dlg = new TimeDistributeSettings();
             if (dlg.ShowDialog(this) == DialogResult.Cancel)
-                return;
+                return false;
+            _bkSeries.Clear();
+            return true;
         }
 
         protected override void RefreshChart()
@@ -141,16 +143,34 @@ namespace AnaControl.Controls.TimeDistribution
                                 se.LegendText = string.Format("{0} ({1}%)"
                                     , se.Name
                                     , (testValues[se.Name] / testValues["TotalTime"] * 100).ToString("0.00"));
-                            }));
 
+                            }));
                     }
                 }
             }
-            
-            foreach (Series se in chart1.Series)
+
+            this.Invoke(new Action(() =>
             {
-                
-            }
+                var newSe = chart1.Series.OrderByDescending((se) =>
+                {
+                    int sPos, nPos;
+                    sPos = se.LegendText.LastIndexOf('(') + 1;
+                    nPos = se.LegendText.LastIndexOf('%') - sPos;
+                    double val = 0;
+                    double.TryParse(se.LegendText.Substring(sPos, nPos), out val);
+                    return val;
+                });
+                foreach (var s in newSe.ToArray())
+                {
+                    _bkSeries.Add(s);
+                }
+                chart1.Series.Clear();
+                foreach (var s in _bkSeries)
+                {
+                    chart1.Series.Add(s);
+                }
+            }));
+
             AddMenuItems();
         }//End RefreshChart
 
@@ -220,7 +240,7 @@ namespace AnaControl.Controls.TimeDistribution
                             Series se = chart1.Series.FindByName(tmi.Text);
                             if (se != null)
                             {
-                                if(!_bkSeries.Contains(se))
+                                if (!_bkSeries.Contains(se))
                                 {
                                     _bkSeries.Add(se);
                                 }

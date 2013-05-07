@@ -41,6 +41,8 @@
             this.ToolStripMenuItem_3d = new System.Windows.Forms.ToolStripMenuItem();
             this.menuItemChartTypes = new System.Windows.Forms.ToolStripMenuItem();
             this.TsbShowValueLabel = new System.Windows.Forms.ToolStripMenuItem();
+            this.miSaveData = new System.Windows.Forms.ToolStripMenuItem();
+            this.miCopyData = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.contextMenuStrip_msChart.SuspendLayout();
@@ -111,9 +113,11 @@
             this.toolStripMenuItem_Save,
             this.ToolStripMenuItem_3d,
             this.menuItemChartTypes,
-            this.TsbShowValueLabel});
+            this.TsbShowValueLabel,
+            this.miSaveData,
+            this.miCopyData});
             this.contextMenuStrip_msChart.Name = "contextMenuStrip_msChart";
-            this.contextMenuStrip_msChart.Size = new System.Drawing.Size(153, 114);
+            this.contextMenuStrip_msChart.Size = new System.Drawing.Size(153, 158);
             this.contextMenuStrip_msChart.Text = "Save";
             // 
             // toolStripMenuItem_Save
@@ -142,6 +146,20 @@
             this.TsbShowValueLabel.Size = new System.Drawing.Size(152, 22);
             this.TsbShowValueLabel.Text = "显示标签值";
             this.TsbShowValueLabel.Click += new System.EventHandler(this.TsbShowValueLabel_Click);
+            // 
+            // miSaveData
+            // 
+            this.miSaveData.Name = "miSaveData";
+            this.miSaveData.Size = new System.Drawing.Size(152, 22);
+            this.miSaveData.Text = "Save Data";
+            this.miSaveData.Click += new System.EventHandler(this.miSaveData_Click);
+            // 
+            // miCopyData
+            // 
+            this.miCopyData.Name = "miCopyData";
+            this.miCopyData.Size = new System.Drawing.Size(152, 22);
+            this.miCopyData.Text = "Copy Data";
+            this.miCopyData.Click += new System.EventHandler(this.miCopyData_Click);
             // 
             // AbstrctAnalyzer
             // 
@@ -172,5 +190,7 @@
         protected System.Windows.Forms.ToolStripMenuItem ToolStripMenuItem_3d;
         protected System.Windows.Forms.ToolStripMenuItem menuItemChartTypes;
         private System.Windows.Forms.ToolStripMenuItem TsbShowValueLabel;
+        private System.Windows.Forms.ToolStripMenuItem miSaveData;
+        private System.Windows.Forms.ToolStripMenuItem miCopyData;
     }
 }

@@ -214,11 +214,11 @@ namespace AnaControl.Controls.FpyCapacitys
             DrawChart(Properties.Settings.Default.DefaultDataType);
         }
 
-        protected override void Setting()
+        protected override bool Setting()
         {
             base.Setting();
             FpyCapacitySettings dlg = new FpyCapacitySettings();
-            if (dlg.ShowDialog(this) == DialogResult.Cancel) return;
+            if (dlg.ShowDialog(this) == DialogResult.Cancel) return false;
             if (this._db != null)
             {
                 _db.time_start = Properties.Settings.Default.DefaultDateTimeStart;
@@ -226,6 +226,7 @@ namespace AnaControl.Controls.FpyCapacitys
                 _db.TestBench = Properties.Settings.Default.DefaultTestBench;
                 _db.ProductType = Properties.Settings.Default.ProductType;
             }
+            return true;
         }
     }
 }
