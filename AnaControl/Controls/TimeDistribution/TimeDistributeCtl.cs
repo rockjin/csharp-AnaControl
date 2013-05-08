@@ -157,6 +157,7 @@ namespace AnaControl.Controls.TimeDistribution
                     sPos = se.LegendText.LastIndexOf('(') + 1;
                     nPos = se.LegendText.LastIndexOf('%') - sPos;
                     double val = 0;
+                    if (sPos <= 0 || nPos <= 0) return val;
                     double.TryParse(se.LegendText.Substring(sPos, nPos), out val);
                     return val;
                 });

@@ -71,6 +71,18 @@ namespace TestAnaControl
         private void OpenFile_Click(object sender, EventArgs e)
         {
             ConnectionBuilder.Instance.ShowDialog(this);
+            if (this.panel1.Controls.Count>0)
+            {
+                Control ctl = this.panel1.Controls[0];
+                if (ctl is NormDist)
+                {
+                    ((NormDist)ctl).Db.Conn = new OleDbConnection(ConnectionBuilder.Instance.Conn);
+                }
+                if (ctl is AbstrctAnalyzer)
+                {
+                    ((AbstrctAnalyzer)ctl).Db.Conn = new OleDbConnection(ConnectionBuilder.Instance.Conn);
+                }
+            }
         }
         private void OutputLog(string str)
         {
