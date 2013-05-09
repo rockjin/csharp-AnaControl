@@ -148,7 +148,7 @@ namespace AnaControl.Controls.TimeDistribution
                     }
                 }
             }
-
+            #region 按照时间的长短对图表进行排序
             this.Invoke(new Action(() =>
             {
                 var newSe = chart1.Series.OrderByDescending((se) =>
@@ -171,7 +171,22 @@ namespace AnaControl.Controls.TimeDistribution
                     chart1.Series.Add(s);
                 }
             }));
+            #endregion 按照时间的长短对图表进行排序
 
+            #region 添加图例时间信息显示
+            this.Invoke(new Action(() =>
+                {
+                    foreach (Series se in chart1.Series)
+                    {
+                        double avg = 0;
+                        foreach (DataPoint pt in se.Points)
+                        {
+                            avg += pt.YValues[0] / se.Points.Count();
+                        }
+                        se.LegendText += "[" + avg.ToString("0.00") + "小时]";
+                    }
+                }));
+            #endregion 添加图例时间信息显示
             AddMenuItems();
         }//End RefreshChart
 

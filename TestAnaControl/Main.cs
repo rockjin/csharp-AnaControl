@@ -125,10 +125,10 @@ namespace TestAnaControl
             proc1.Conn = new OleDbConnection(ConnectionBuilder.Instance.Conn);
             try
             {
-                OleDbDataAdapter oda;
+                OleDbDataAdapter proc2_oda;
                 mprintf("正在拷贝fail_code_table...");
                 DataTable table = proc1.GetDataTable("select * from FAIL_CODE_TABLE");
-                DataTable table2 = proc2.GetDataTable("select * from FAIL_CODE_TABLE", out oda);
+                DataTable table2 = proc2.GetDataTable("select * from FAIL_CODE_TABLE", out proc2_oda);
                 DataColumn[] primKeys = new DataColumn[2];
                 primKeys[0] = table2.Columns["product_name"];
                 primKeys[1] = table2.Columns["fail_code"];
@@ -146,84 +146,90 @@ namespace TestAnaControl
                                         , row["upload_state"]);
                     }
                 }
-                oda.Update(table2);
+                proc2_oda.Update(table2);
+                proc2_oda.Dispose();
+
                 mprintf(string.Format("拷贝完成,共计{0}条数据", table2.Rows.Count));
                 mprintf("正在拷贝test_results...");
                 table = proc1.GetDataTable("select * from test_results");
-                table2 = proc2.GetDataTable("select * from test_results", out oda);
-                primKeys = new DataColumn[2];
-                primKeys[0] = table2.Columns["product_sn"];
-                primKeys[1] = table2.Columns["test_time"];
-                table2.PrimaryKey = primKeys;
-                foreach (DataRow row in table.Rows)
+
+                foreach (DataRow proc1_row in table.Rows)
                 {
-                    object[] keys = new object[2];
-                    keys[0] = row["product_sn"];
-                    keys[1] = row["test_time"];
-                    if (!table2.Rows.Contains(keys))
+                    var sqlCmd = "select * from test_results where product_sn = ? and test_time = ?";
+                    using (OleDbCommand odc = new OleDbCommand(sqlCmd, proc2.Conn))
                     {
-                        table2.Rows.Add(row["PRODUCT_SN"]
-                                        , row["TEST_TIME"]
-                                        , row["TESTER"]
-                                        , row["STATION"]
-                                        , row["PRODUCT_NAME"]
-                                        , row["FAIL_CODE"]
-                                        , row["RESULTS_FILE"]
-                                        , row["UPLOAD_STATE"]);
+                        OleDbParameter pa = new OleDbParameter("@1", proc1_row["PRODUCT_SN"]);
+                        odc.Parameters.Add(pa);
+                        pa = new OleDbParameter("@2", OleDbType.Date);
+                        pa.Value = proc1_row["TEST_TIME"];
+                        odc.Parameters.Add(pa);
+
+                        var reader = odc.ExecuteReader();
+                        if (reader.Read())
+                        {
+                            continue;
+                        }
                     }
-                }
-                oda.Update(table2);
-                mprintf(string.Format("拷贝完成,共计{0}条数据", table2.Rows.Count));
-                mprintf("正在拷贝test_item_values...");
-                table = proc1.GetDataTable("select * from test_item_values");
-                table2 = proc2.GetDataTable("select * from test_item_values", out oda);
-                primKeys = new DataColumn[3];
-                primKeys[0] = table2.Columns["product_sn"];
-                primKeys[1] = table2.Columns["test_time"];
-                primKeys[2] = table2.Columns["test_item_name"];
-                table2.PrimaryKey = primKeys;
-                foreach (DataRow row in table.Rows)
-                {
-                    object[] keys = new object[3];
-                    keys[0] = row["product_sn"];
-                    keys[1] = row["test_time"];
-                    keys[2] = row["test_item_name"];
-                    if (!table2.Rows.Contains(keys))
+                    sqlCmd = "insert into test_results(PRODUCT_SN,TEST_TIME,TESTER,STATION,PRODUCT_NAME,FAIL_CODE) "
+                            + "values(?,?,?,?,?,?)";
+                    using (OleDbCommand odc = new OleDbCommand(sqlCmd, proc2.Conn))
                     {
-                        table2.Rows.Add(row["PRODUCT_SN"]
-                                        , row["TEST_TIME"]
-                                        , row["TEST_ITEM_NAME"]
-                                        , row["ITEM_VALUE"]
-                                        , row["LOW_LIMIT"]
-                                        , row["UP_LIMIT"]
-                                        , row["PASS_STATE"]
-                                        , row["UPLOAD_STATE"]);
+                        odc.Parameters.Add(new OleDbParameter("@p1", proc1_row["PRODUCT_SN"]));
+                        OleDbParameter pa = new OleDbParameter("@P2", OleDbType.Date);
+                        pa.Value = proc1_row["TEST_TIME"];
+                        odc.Parameters.Add(pa);
+                        odc.Parameters.Add(new OleDbParameter("@p3", proc1_row["TESTER"]));
+                        odc.Parameters.Add(new OleDbParameter("@p4", proc1_row["STATION"]));
+                        odc.Parameters.Add(new OleDbParameter("@p5", proc1_row["PRODUCT_NAME"]));
+                        odc.Parameters.Add(new OleDbParameter("@p6", proc1_row["FAIL_CODE"]));
+                        if (odc.ExecuteNonQuery() == 1)
+                        {
+                            mprintf("合并数据{0}{1}成功!", proc1_row["PRODUCT_SN"], proc1_row["TEST_TIME"]);
+                        }
+                        else
+                        {
+                            mprintf("合并数据{0}{1}失败!", proc1_row["PRODUCT_SN"], proc1_row["TEST_TIME"]);
+                        }
                     }
-                }
-                oda.Update(table2);
-                mprintf(string.Format("拷贝完成,共计{0}条数据", table2.Rows.Count));
-                mprintf("正在拷贝bind...");
-                table = proc1.GetDataTable("select * from bind");
-                table2 = proc2.GetDataTable("select * from bind", out oda);
-                primKeys = new DataColumn[2];
-                primKeys[0] = table2.Columns["product_sn"];
-                primKeys[1] = table2.Columns["sub_board_name"];
-                table2.PrimaryKey = primKeys;
-                foreach (DataRow row in table.Rows)
-                {
-                    object[] keys = new object[2];
-                    keys[0] = row["product_sn"];
-                    keys[1] = row["sub_board_name"];
-                    if (!table2.Rows.Contains(keys))
+
+                    var proc1_table2 = proc1.GetDataTable(string.Format("select * from test_item_values where test_id = {0}", proc1_row["TEST_ID"]));
+                    int lastRecordId = 0;
+                    sqlCmd = "select @@identity";
+                    using (OleDbCommand odc = new OleDbCommand(sqlCmd, proc2.Conn))
                     {
-                        table2.Rows.Add(row["PRODUCT_SN"]
-                                        , row["UPDATE_TIME"]
-                                        , row["SUB_BOARD_NAME"]
-                                        , row["SUB_BOARD_SN"]
-                                        , row["UPLOAD_STATE"]);
+                        lastRecordId = int.Parse(odc.ExecuteScalar().ToString());
                     }
+                    #region 拷贝test_item_values
+                    var proc2_table2 = proc2.GetDataTable(string.Format("select * from test_item_values where test_id = {0}", lastRecordId), out proc2_oda);
+                    foreach (DataRow row in proc1_table2.Rows)
+                    {
+                        var newRow = proc2_table2.NewRow();
+                        newRow["test_id"] = lastRecordId;
+                        newRow["PRODUCT_SN"] = row["PRODUCT_SN"];
+                        newRow["TEST_TIME"] = row["TEST_TIME"];
+                        newRow["TEST_ITEM_NAME"] = row["TEST_ITEM_NAME"];
+                        newRow["ITEM_VALUE"] = row["ITEM_VALUE"];
+                        newRow["LOW_LIMIT"] = row["LOW_LIMIT"];
+                        newRow["UP_LIMIT"] = row["UP_LIMIT"];
+                        proc2_table2.Rows.Add(newRow);
+                    }
+                    proc2_oda.Update(proc2_table2);
+                    proc2_oda.Dispose();
+                    #endregion 拷贝test_item_values
+
+                    proc1_table2 = proc1.GetDataTable(string.Format("select * from TEST_TIME_DISTRIBUTION where test_id = {0}", proc1_row["TEST_ID"]));
+                    proc2_table2 = proc2.GetDataTable(string.Format("select * from TEST_TIME_DISTRIBUTION where test_id = {0}", lastRecordId), out proc2_oda);
+                    foreach (DataRow row in proc1_table2.Rows)
+                    {
+                        var newRow = proc2_table2.NewRow();
+                        newRow["test_id"] = lastRecordId;
+                        newRow["ITEM_NAME"] = row["ITEM_NAME"];
+                        newRow["USED_TIME"] = row["USED_TIME"];
+                        proc2_table2.Rows.Add(newRow);
+                    }
+                    proc2_oda.Update(proc2_table2);
+                    proc2_oda.Dispose();
                 }
-                oda.Update(table2);
                 mprintf("拷贝完成");
             }
             catch (Exception exp)
