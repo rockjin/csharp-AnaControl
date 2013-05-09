@@ -480,21 +480,9 @@ namespace AnaControl.Controls
             ParameterSetting dlg = new ParameterSetting(_db);
             if (dlg.ShowDialog(this) == DialogResult.Cancel)
                 return;
-            Properties.Settings.Default.AutoWildcard = dlg.wpf.AddWildcard;
-            Properties.Settings.Default.DefaultRemoveRepeat = dlg.wpf.RemoveRepeatData;
-            Properties.Settings.Default.DefaultRemovePassData = dlg.wpf.RemovePassData;
-            Properties.Settings.Default.DefaultRemoveFailData = dlg.wpf.RemoveFailData;
-            Properties.Settings.Default.DefaultRemoveSpecialData = dlg.wpf.RemoveExceptData;
-            Properties.Settings.Default.DefaultDateTimeStart = dlg.wpf.StartTime;
-            Properties.Settings.Default.DefaultDateTimeEnd = dlg.wpf.EndTime;
-            Properties.Settings.Default.AbnormalUpData = dlg.wpf.MaxValue;
-            Properties.Settings.Default.AbnormalLowData = dlg.wpf.MinValue;
-            Properties.Settings.Default.ProductType = dlg.wpf.ProductType;
-            Properties.Settings.Default.DefaultTestBench = dlg.wpf.TestBench;
-            Properties.Settings.Default.DefaultTestItem = dlg.wpf.TestItem;
+
             this.dateTimePicker_Start.Value = dlg.wpf.StartTime;
             this.dateTimePicker_End.Value = dlg.wpf.EndTime;
-            Properties.Settings.Default.Save();
 
             DlgWaiting wait = new DlgWaiting();
             wait.OnAction += dlg_OnAction;

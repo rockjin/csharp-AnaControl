@@ -111,6 +111,10 @@ namespace AnaControl.Controls
             {
                 this.cbTestItem.Items.Add(row["TEST_ITEM_NAME"].ToString().Trim());
             }
+
+            this.tbStatisticsCycle.Text = Properties.Settings.Default.DefaultShowNum.ToString();
+            this.tbMaxTestTime.Text = Properties.Settings.Default.DefaultMaxTestTime.ToString();
+            this.tbMinTestTime.Text = Properties.Settings.Default.DefaultMinTestTime.ToString();
         }
 
         private void cbProductType_SelectionChanged(object sender, SelectionChangedEventArgs e)

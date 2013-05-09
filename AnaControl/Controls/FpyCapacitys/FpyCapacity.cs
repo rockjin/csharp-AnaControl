@@ -217,7 +217,7 @@ namespace AnaControl.Controls.FpyCapacitys
         protected override bool Setting()
         {
             base.Setting();
-            FpyCapacitySettings dlg = new FpyCapacitySettings();
+            ParameterSetting dlg = new ParameterSetting(_db);
             if (dlg.ShowDialog(this) == DialogResult.Cancel) return false;
             if (this._db != null)
             {

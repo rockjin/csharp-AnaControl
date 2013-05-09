@@ -39,6 +39,32 @@ namespace AnaControl.Dlgs
             this.wpf.TestBench = this.wpf.cbTestBench.Text == "Any" ? "%" : this.wpf.cbTestBench.Text;
             this.wpf.TestItem = this.wpf.cbTestItem.Text == "Any" ? "%" : this.wpf.cbTestItem.Text;
 
+            double val = Properties.Settings.Default.DefaultMaxTestTime;
+            double.TryParse(this.wpf.tbMaxTestTime.Text, out val);
+            Properties.Settings.Default.DefaultMaxTestTime = val;
+            val = Properties.Settings.Default.DefaultMinTestTime;
+            double.TryParse(this.wpf.tbMinTestTime.Text, out val);
+            Properties.Settings.Default.DefaultMinTestTime = val;
+
+            int ival = Properties.Settings.Default.DefaultShowNum;
+            int.TryParse(this.wpf.tbStatisticsCycle.Text, out ival);
+            Properties.Settings.Default.DefaultShowNum = ival;
+
+
+            Properties.Settings.Default.AutoWildcard = wpf.AddWildcard;
+            Properties.Settings.Default.DefaultRemoveRepeat = wpf.RemoveRepeatData;
+            Properties.Settings.Default.DefaultRemovePassData = wpf.RemovePassData;
+            Properties.Settings.Default.DefaultRemoveFailData = wpf.RemoveFailData;
+            Properties.Settings.Default.DefaultRemoveSpecialData = wpf.RemoveExceptData;
+            Properties.Settings.Default.DefaultDateTimeStart = wpf.StartTime;
+            Properties.Settings.Default.DefaultDateTimeEnd = wpf.EndTime;
+            Properties.Settings.Default.AbnormalUpData = wpf.MaxValue;
+            Properties.Settings.Default.AbnormalLowData = wpf.MinValue;
+            Properties.Settings.Default.ProductType = wpf.ProductType;
+            Properties.Settings.Default.DefaultTestBench = wpf.TestBench;
+            Properties.Settings.Default.DefaultTestItem = wpf.TestItem;
+
+            Properties.Settings.Default.Save();
 
             DialogResult = DialogResult.OK;
         }

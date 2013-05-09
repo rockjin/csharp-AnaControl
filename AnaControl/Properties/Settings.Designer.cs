@@ -214,5 +214,29 @@ namespace AnaControl.Properties {
                 this["DefaultShowValues"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public double DefaultMaxTestTime {
+            get {
+                return ((double)(this["DefaultMaxTestTime"]));
+            }
+            set {
+                this["DefaultMaxTestTime"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public double DefaultMinTestTime {
+            get {
+                return ((double)(this["DefaultMinTestTime"]));
+            }
+            set {
+                this["DefaultMinTestTime"] = value;
+            }
+        }
     }
 }

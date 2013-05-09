@@ -8,6 +8,11 @@ using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using System.Data.OleDb;
+using Microsoft.CSharp;
+using System.CodeDom.Compiler;
+using System.IO;
+using AnaControl.Scripts;
+using AnaControl.Dlgs;
 
 
 namespace AnaControl.Controls.TimeDistribution
@@ -22,7 +27,7 @@ namespace AnaControl.Controls.TimeDistribution
 
         protected override bool Setting()
         {
-            TimeDistributeSettings dlg = new TimeDistributeSettings();
+            ParameterSetting dlg = new ParameterSetting(_db);
             if (dlg.ShowDialog(this) == DialogResult.Cancel)
                 return false;
             _bkSeries.Clear();
@@ -173,6 +178,28 @@ namespace AnaControl.Controls.TimeDistribution
             }));
             #endregion 按照时间的长短对图表进行排序
 
+            #region 过滤图表选项
+            try
+            {
+                this.Invoke(new Action(() =>
+                    {
+                        Filter.Exec(ref _bkSeries);
+                        chart1.Series.Clear();
+                        foreach (var s in _bkSeries)
+                        {
+                            chart1.Series.Add(s);
+                        }
+                    }));
+            }
+            catch (Exception exp)
+            {
+                this.Invoke(new Action(() =>
+                    {
+                        MessageBox.Show(this, exp.ToString());
+                    }));
+            }
+            #endregion 过滤图标选项
+
             #region 添加图例时间信息显示
             this.Invoke(new Action(() =>
                 {
@@ -183,7 +210,7 @@ namespace AnaControl.Controls.TimeDistribution
                         {
                             avg += pt.YValues[0] / se.Points.Count();
                         }
-                        se.LegendText += "[" + avg.ToString("0.00") + "小时]";
+                        se.LegendText += "[" + avg.ToString("0.0000") + "小时]";
                     }
                 }));
             #endregion 添加图例时间信息显示
