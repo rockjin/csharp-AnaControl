@@ -1,18 +1,14 @@
-﻿using System;
+﻿using AnaControl.Dlgs;
+using AnaControl.Scripts;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Data.OleDb;
+using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
-using System.Data.OleDb;
-using Microsoft.CSharp;
-using System.CodeDom.Compiler;
-using System.IO;
-using AnaControl.Scripts;
-using AnaControl.Dlgs;
 
 
 namespace AnaControl.Controls.TimeDistribution
@@ -116,23 +112,35 @@ namespace AnaControl.Controls.TimeDistribution
                     dt = new DataTable("DISTRIBUTION");
                     oda.Fill(dt);
                     oda.Dispose();
+                    var totalRow = dt.AsEnumerable().First((row) =>
+                    {
+                        if (row["ITEM_NAME"].ToString().Trim() == "TotalTime") return true;
+                        return false;
+                    });
+                    double totalTestTime = double.Parse(totalRow["USED_TIME"].ToString());
+                    if (totalTestTime < Properties.Settings.Default.DefaultMinTestTime
+                        || totalTestTime > Properties.Settings.Default.DefaultMaxTestTime)
+                        continue;
+
                     this.Invoke(new Action(delegate()
+                    {
+                        foreach (Series se in this.chart1.Series)
                         {
-                            foreach (Series se in this.chart1.Series)
-                            {
-                                se.Points.Add(0);
-                            }
-                        }));
+                            se.Points.Add(0);
+                        }
+                    }));
+
                     foreach (DataRow row in dt.Rows)
                     {
                         string typeName = row["ITEM_NAME"].ToString().Trim();
+                        
                         this.Invoke(new Action(delegate()
                             {
                                 this.chart1.Series[typeName].Points[
                                     this.chart1.Series[typeName].Points.Count - 1].SetValueY(double.Parse(row["USED_TIME"].ToString()));
                                 this.chart1.Series[typeName].Points[
                                     this.chart1.Series[typeName].Points.Count - 1].BorderWidth = 5;
-                                testValues[typeName] += double.Parse(row["USED_TIME"].ToString());
+                                testValues[typeName] += double.Parse(row["USED_TIME"].ToString()) / totalTestTime;
                                 if (Properties.Settings.Default.DefaultShowValues)
                                 {
                                     this.chart1.Series[typeName].Points[
@@ -147,7 +155,7 @@ namespace AnaControl.Controls.TimeDistribution
                             {
                                 se.LegendText = string.Format("{0} ({1}%)"
                                     , se.Name
-                                    , (testValues[se.Name] / testValues["TotalTime"] * 100).ToString("0.00"));
+                                    , (testValues[se.Name] / se.Points.Count() * 100).ToString("0.00"));
 
                             }));
                     }
@@ -221,6 +229,7 @@ namespace AnaControl.Controls.TimeDistribution
         {
             this._contentMenuEx.Clear();
             ToolStripMenuItem mi = new ToolStripMenuItem("曲线类型");
+            mi.Name = mi.Text;
             this._contentMenuEx.Add(mi);
             ToolStripMenuItem allItem = new ToolStripMenuItem("全选");
             allItem.Checked = true;

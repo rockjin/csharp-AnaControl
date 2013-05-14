@@ -138,7 +138,7 @@
             // 
             this.menuItemChartTypes.Name = "menuItemChartTypes";
             this.menuItemChartTypes.Size = new System.Drawing.Size(152, 22);
-            this.menuItemChartTypes.Text = "曲线类型";
+            this.menuItemChartTypes.Text = "图表类型";
             // 
             // TsbShowValueLabel
             // 

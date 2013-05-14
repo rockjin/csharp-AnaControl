@@ -42,7 +42,7 @@ namespace AnaControl.Controls
             wait.ShowDialog();
             foreach (ToolStripItem mi in _contentMenuEx)
             {
-                if (!this.contextMenuStrip_msChart.Items.ContainsKey(mi.Name))
+                if (!this.contextMenuStrip_msChart.Items.ContainsKey(mi.Text))
                 {
                     this.contextMenuStrip_msChart.Items.Add(mi);
                 }
