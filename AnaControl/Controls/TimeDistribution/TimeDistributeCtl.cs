@@ -96,6 +96,34 @@ namespace AnaControl.Controls.TimeDistribution
             }
             dt.Dispose();
 
+            DateTime timeValidFirst, timeValidLast;
+
+            sqlCmd = "select * from TEST_TIME_DISTRIBUTION t1,"
+                + "test_results t2 "
+                + "where t2.test_time >= "
+                + "#" + Properties.Settings.Default.DefaultDateTimeStart.ToString("yyyy-MM-dd HH:mm:ss") + "#"
+                + "and t2.test_time < "
+                + "#" + Properties.Settings.Default.DefaultDateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss") + "#"
+                + "and t1.test_id = t2.test_id "
+                + "and t2.STATION like '%" + Properties.Settings.Default.DefaultTestBench + "%' "
+                + "and t2.PRODUCT_NAME like '%" + Properties.Settings.Default.ProductType + "%' "
+                + "order by t2.test_time";
+            dt = _db.GetDataTable(sqlCmd);
+            timeValidFirst = (DateTime)dt.Rows[0]["TEST_TIME"];
+            timeValidLast = (DateTime)dt.Rows[dt.Rows.Count - 1]["TEST_TIME"];
+            double lastTimeLong = (double)dt.Rows[dt.Rows.Count - 1]["USED_TIME"];
+            TimeSpan lastTimeSpan = new TimeSpan((long)(lastTimeLong * 60 * 60 * 1000 * 1000 * 10));
+            timeValidLast = timeValidLast + lastTimeSpan;
+
+            this.Invoke(new Action(() =>
+                {
+                    this.chart1.Titles[0].Text += string.Format("   有效时长({0}  --  {1})  ({2}小时)",
+                        timeValidFirst.ToString("yyyy-MM-dd HH:mm:ss"),
+                        timeValidLast.ToString("yyyy-MM-dd HH:mm:ss"),
+                        (timeValidLast - timeValidFirst).TotalHours.ToString("0.0000"));
+                }));
+
+
             foreach (int tt in types)
             {
                 sqlCmd = "select t1.* from TEST_TIME_DISTRIBUTION t1,"
