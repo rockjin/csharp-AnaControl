@@ -55,6 +55,10 @@ namespace AnaControl.Controls
 
             InitializeComponent();
 
+            cbProductType.Items.Clear();
+            cbTestBench.Items.Clear();
+            cbTestItem.Items.Clear();
+
             cbProductType.Items.Add("Any");
             cbTestBench.Items.Add("Any");
             cbTestItem.Items.Add("Any");
@@ -99,7 +103,7 @@ namespace AnaControl.Controls
             dt = db.GetDataTable(sql);
             foreach (DataRow row in dt.Rows)
             {
-                this.cbTestBench.Items.Add(row["STATION"].ToString().Trim());
+                this.cbTestBench.Items.Add(row[0].ToString().Trim());
             }
 
             sql = "select distinct(TEST_ITEM_NAME) from test_item_values t1,test_results t2 "
@@ -115,14 +119,25 @@ namespace AnaControl.Controls
             this.tbStatisticsCycle.Text = Properties.Settings.Default.DefaultShowNum.ToString();
             this.tbMaxTestTime.Text = Properties.Settings.Default.DefaultMaxTestTime.ToString();
             this.tbMinTestTime.Text = Properties.Settings.Default.DefaultMinTestTime.ToString();
+            this.cbProductType.SelectionChanged+=cbProductType_SelectionChanged;
+            this.cbTestBench.SelectionChanged+=cbTestBench_SelectionChanged;
         }
 
         private void cbProductType_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string sql;
-            string ptype = cbProductType.Text == "Any" ? "" : cbProductType.Text;
+            string ptype = "";
+            if (e.AddedItems.Count > 0)
+            {
+                ptype = e.AddedItems[0].ToString() == "Any" ? "" : e.AddedItems[0].ToString();
+            }
             string btype = cbTestBench.Text == "Any" ? "" : cbTestBench.Text;
 
+            this.cbTestBench.Items.Clear();
+            this.cbTestItem.Items.Clear();
+            this.cbTestBench.Items.Add("Any");
+            this.cbTestItem.Items.Add("Any");
+            
             sql = "select distinct(STATION) from test_results where "
                 + "product_name like '%" + ptype + "%'";
             DataTable dt = db.GetDataTable(sql);
@@ -147,7 +162,14 @@ namespace AnaControl.Controls
             string sql;
             DataTable dt;
             string ptype = cbProductType.Text == "Any" ? "" : cbProductType.Text;
-            string btype = cbTestBench.Text == "Any" ? "" : cbTestBench.Text;
+            string btype = "";
+            if (e.AddedItems.Count > 0)
+            {
+                btype = e.AddedItems[0].ToString() == "Any" ? "" : e.AddedItems[0].ToString();
+            }
+
+            this.cbTestItem.Items.Clear();
+            this.cbTestItem.Items.Add("Any");
 
             sql = "select distinct(TEST_ITEM_NAME) from test_item_values t1,test_results t2 "
                 + "where t1.product_sn = t2.product_sn and t1.test_time = t2.test_time "

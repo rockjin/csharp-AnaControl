@@ -41,8 +41,8 @@
             <Label Content="产品类型：" Grid.Column="0" />
             <Label Content="测试工位：" Grid.Row="1" />
             <Label Content="测试项：" Grid.Row="2"/>
-            <ComboBox x:Name="cbProductType" Grid.Column="1" SelectionChanged="cbProductType_SelectionChanged"/>
-            <ComboBox x:Name="cbTestBench" Grid.Column="1" Grid.Row="1" SelectionChanged="cbTestBench_SelectionChanged"/>
+            <ComboBox x:Name="cbProductType" Grid.Column="1" />
+            <ComboBox x:Name="cbTestBench" Grid.Column="1" Grid.Row="1" />
             <ComboBox x:Name="cbTestItem" Grid.Column="1" Grid.Row="2" />
         </Grid>
         <GroupBox Header="过滤选项" Grid.ColumnSpan="2" Grid.Row="1" Margin="5">
