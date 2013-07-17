@@ -86,6 +86,7 @@ namespace AnaControl.Controls
             form2.Child = dtEndTime;
             dtStartTime.Value = StartTime;
             dtEndTime.Value = EndTime;
+            textBoxUpLimit.Text = Properties.Settings.Default.DefaultTestDataUpLimit.ToString();
 
 
             string sql = "select distinct(PRODUCT_NAME) from test_results";

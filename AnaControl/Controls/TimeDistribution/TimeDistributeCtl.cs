@@ -43,9 +43,20 @@ namespace AnaControl.Controls.TimeDistribution
                 + "and t2.STATION like '%" + Properties.Settings.Default.DefaultTestBench + "%' "
                 + "and t2.PRODUCT_NAME like '%" + Properties.Settings.Default.ProductType + "%' ";
             DataTable dt = _db.GetDataTable(sqlCmd);
-            foreach (DataRow row in dt.Rows)
+            int TotalNumber = Properties.Settings.Default.DefaultTestDataUpLimit;
+            if (dt.Rows.Count < TotalNumber)
             {
-                types.Add(long.Parse(row["TEST_ID"].ToString()));
+                foreach (DataRow row in dt.Rows)
+                {
+                    types.Add(long.Parse(row["TEST_ID"].ToString()));
+                }
+            }
+            else
+            {
+                for (int i = 0; i < dt.Rows.Count; i += dt.Rows.Count / TotalNumber)
+                {
+                    types.Add(long.Parse(dt.Rows[i]["TEST_ID"].ToString()));
+                }
             }
             dt.Dispose();
 

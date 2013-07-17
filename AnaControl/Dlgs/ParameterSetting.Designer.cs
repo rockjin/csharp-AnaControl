@@ -97,7 +97,7 @@
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "ProduceSelector";
+            this.Text = "参数设置";
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 

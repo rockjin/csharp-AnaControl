@@ -125,7 +125,21 @@ namespace AnaControl.Controls
         private void ToolStripMenuItem_3d_Click(object sender, EventArgs e)
         {
             this.ToolStripMenuItem_3d.Checked = !this.ToolStripMenuItem_3d.Checked;
-            RefreshChart();
+            if (this.ToolStripMenuItem_3d.Checked)
+            {
+                foreach (var se in chart1.ChartAreas)
+                {
+                    se.Area3DStyle.Enable3D = true;
+                }
+            }
+            else
+            {
+                foreach (var se in chart1.ChartAreas)
+                {
+                    se.Area3DStyle.Enable3D = false;
+                }
+            }
+            //RefreshChart();
         }
 
         private void AbstrctAnalyzer_Load(object sender, EventArgs e)

@@ -238,5 +238,17 @@ namespace AnaControl.Properties {
                 this["DefaultMinTestTime"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public int DefaultTestDataUpLimit {
+            get {
+                return ((int)(this["DefaultTestDataUpLimit"]));
+            }
+            set {
+                this["DefaultTestDataUpLimit"] = value;
+            }
+        }
     }
 }

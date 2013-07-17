@@ -63,7 +63,10 @@ namespace AnaControl.Dlgs
             Properties.Settings.Default.ProductType = wpf.ProductType;
             Properties.Settings.Default.DefaultTestBench = wpf.TestBench;
             Properties.Settings.Default.DefaultTestItem = wpf.TestItem;
-
+            if (int.TryParse(wpf.textBoxUpLimit.Text, out ival))
+            {
+                Properties.Settings.Default.DefaultTestDataUpLimit = ival;
+            }            
             Properties.Settings.Default.Save();
 
             DialogResult = DialogResult.OK;
