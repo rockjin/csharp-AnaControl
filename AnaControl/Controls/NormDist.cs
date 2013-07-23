@@ -106,37 +106,40 @@ namespace AnaControl.Controls
             string sqlCmd = "SELECT avg(t1.item_value) as avgVal,stdev(t1.item_value) as stdVal,"
                             + "min(t1.item_value) as minVal,max(t1.item_value) as maxVal,count(t1.item_value) as totalVal,"
                             + "min(t1.Low_Limit) as lowLimit,max(t1.up_limit) as upLimit "
-                            + "from TEST_ITEM_VALUES t1, TEST_RESULTS t2 "
-                            + "where t2.test_time>=#" +
-                            Properties.Settings.Default.DefaultDateTimeStart.ToString("yyyy-MM-dd HH:mm:ss") + "# "
-                            + "and t2.test_time<=#" +
-                            Properties.Settings.Default.DefaultDateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss") + "# "
-                            + "and t1.TEST_ITEM_NAME like '" + matchString + "' "
-                            + "and t1.PRODUCT_SN = t2.PRODUCT_SN and t1.TEST_TIME=t2.TEST_TIME "
-                            + "and t2.STATION like '%" + Properties.Settings.Default.DefaultTestBench + "%' "
-                            + "and t2.PRODUCT_NAME like '%" + Properties.Settings.Default.ProductType + "%' ";
+                            + "from TEST_ITEM_VALUES t1, TEST_RESULTS t2 ";                           
             InvokeOnLog("create sql cmd...\n");
             if (Properties.Settings.Default.DefaultRemoveRepeat)
             {
                 InvokeOnLog("remove repeats\n");
-                sqlCmd += " and t1.test_time in("
-                          + " select max(test_time) "
-                          + " from test_results "
-                          + "where test_time>=#" +
-                           Properties.Settings.Default.DefaultDateTimeStart.ToString("yyyy-MM-dd HH:mm:ss") + "# "
-                          + "and test_time<=#" +
-                           Properties.Settings.Default.DefaultDateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss") + "# "
-                          + " group by product_sn)";
+                sqlCmd += " ,("
+                          + " select max(test_id) as test_id,product_sn,test_item_name "
+                          + " from TEST_ITEM_VALUES "
+                          + " group by product_sn,test_item_name"
+                          + ") t3"
+                          + " where t2.test_id = t3.test_id and t1.test_item_name = t3.test_item_name and ";
             }
+            else
+            {
+                sqlCmd += " where ";
+            }
+            sqlCmd+= " t2.test_time>=#" +
+                    Properties.Settings.Default.DefaultDateTimeStart.ToString("yyyy-MM-dd HH:mm:ss") + "# "
+                    + "and t2.test_time<=#" +
+                    Properties.Settings.Default.DefaultDateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss") + "# "
+                    + "and t1.TEST_ITEM_NAME like '" + matchString + "' "
+                    + "and t1.TEST_ID = t2.TEST_ID "
+                    + "and t2.STATION like '%" + Properties.Settings.Default.DefaultTestBench + "%' "
+                    + "and t2.PRODUCT_NAME like '%" + Properties.Settings.Default.ProductType + "%' ";
+
             if (Properties.Settings.Default.DefaultRemovePassData)
             {
                 InvokeOnLog("remove pass data\n");
-                sqlCmd += " and t1.pass_state <> 0 and t2.fail_code <> 0";
+                sqlCmd += " and t1.pass_state <> 0";
             }
             if (Properties.Settings.Default.DefaultRemoveFailData)
             {
                 InvokeOnLog("remove fail data\n");
-                sqlCmd += " and t1.pass_state = 0 and t2.fail_code = 0";
+                sqlCmd += " and t1.pass_state = 0";
             }
             //if (this.toolStripMenuItem_RemoveRepeats.Checked)
             //{
@@ -175,37 +178,39 @@ namespace AnaControl.Controls
 
 
             sqlCmd = "SELECT t1.item_value "
-                        + "from TEST_ITEM_VALUES t1, TEST_RESULTS t2 "
-                        + "where t2.test_time>=#" +
-                        Properties.Settings.Default.DefaultDateTimeStart.ToString("yyyy-MM-dd HH:mm:ss") + "# "
-                        + "and t2.test_time<=#" +
-                        Properties.Settings.Default.DefaultDateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss") + "# "
-                        + "and t1.TEST_ITEM_NAME like '" + matchString + "' "
-                        + "and t1.PRODUCT_SN = t2.PRODUCT_SN and t1.TEST_TIME=t2.TEST_TIME "
-                        + "and t2.STATION like '%" + Properties.Settings.Default.DefaultTestBench + "%' "
-                        + "and t2.PRODUCT_NAME like '%" + Properties.Settings.Default.ProductType + "%' ";
+                        + "from TEST_ITEM_VALUES t1, TEST_RESULTS t2 ";                       
             InvokeOnLog("create sql command...\n");
             if (Properties.Settings.Default.DefaultRemoveRepeat)
             {
                 InvokeOnLog("remove repeats\n");
-                sqlCmd += " and t1.test_time in("
-                          + " select max(test_time) "
-                          + " from test_results "
-                          + "where test_time>=#" +
-                           Properties.Settings.Default.DefaultDateTimeStart.ToString("yyyy-MM-dd HH:mm:ss") + "# "
-                          + "and test_time<=#" +
-                           Properties.Settings.Default.DefaultDateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss") + "# "
-                          + " group by product_sn)";
+                sqlCmd += " ,("
+                          + " select max(test_id) as test_id,product_sn,test_item_name "
+                          + " from TEST_ITEM_VALUES "
+                          + " group by product_sn,test_item_name"
+                          + ") t3"
+                          + " where t2.test_id = t3.test_id and t1.test_item_name = t3.test_item_name and ";
             }
+            else
+            {
+                sqlCmd += " where ";
+            }
+            sqlCmd += " t2.test_time>=#" +
+                    Properties.Settings.Default.DefaultDateTimeStart.ToString("yyyy-MM-dd HH:mm:ss") + "# "
+                    + "and t2.test_time<=#" +
+                    Properties.Settings.Default.DefaultDateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss") + "# "
+                    + "and t1.TEST_ITEM_NAME like '" + matchString + "' "
+                    + "and t1.PRODUCT_SN = t2.PRODUCT_SN and t1.TEST_TIME=t2.TEST_TIME "
+                    + "and t2.STATION like '%" + Properties.Settings.Default.DefaultTestBench + "%' "
+                    + "and t2.PRODUCT_NAME like '%" + Properties.Settings.Default.ProductType + "%' ";
             if (Properties.Settings.Default.DefaultRemovePassData)
             {
                 InvokeOnLog("remove pass data\n");
-                sqlCmd += " and t1.pass_state <> 0 and t2.fail_code <> 0";
+                sqlCmd += " and t1.pass_state <> 0";
             }
             if (Properties.Settings.Default.DefaultRemoveFailData)
             {
                 InvokeOnLog("remove fail data\n");
-                sqlCmd += " and t1.pass_state = 0 and t2.fail_code = 0";
+                sqlCmd += " and t1.pass_state = 0";
             }
             //if (this.toolStripMenuItem_RemoveRepeats.Checked)
             //{
@@ -364,7 +369,7 @@ namespace AnaControl.Controls
                 count = 0;
                 for (double x = xStart; x <= xEnd; x += xStep)
                 {
-                    if (x - xStep / 2 < _data[i] && x + xStep / 2 >= _data[i])
+                    if (x - xStep / 2 <= _data[i] && x + xStep / 2 >= _data[i])
                     {
                         itemVals[count]++;
                         break;
@@ -377,6 +382,9 @@ namespace AnaControl.Controls
             {
                 yMax = yMax > itemVals[count] ? yMax : itemVals[count];
                 this.chart1.Series["Column"].Points.AddXY(x, itemVals[count]);
+                this.chart1.Series["Column"].Points[this.chart1.Series["Column"].Points.Count - 1].Label = itemVals[count].ToString();
+                this.chart1.Series["Column"].Points[this.chart1.Series["Column"].Points.Count - 1].LabelForeColor = Color.Red;
+                chart1.Series["Column"].Points[this.chart1.Series["Column"].Points.Count - 1].LabelAngle = 15;
                 //this.chart1.Series["Column"].Points[this.chart1.Series["Column"].Points.Count - 1].AxisLabel = x.ToString("f1");
                 count++;
             }
