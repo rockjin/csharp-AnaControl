@@ -90,14 +90,14 @@
             // 打开文件ToolStripMenuItem
             // 
             this.打开文件ToolStripMenuItem.Name = "打开文件ToolStripMenuItem";
-            this.打开文件ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.打开文件ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.打开文件ToolStripMenuItem.Text = "打开数据库";
             this.打开文件ToolStripMenuItem.Click += new System.EventHandler(this.OpenFile_Click);
             // 
             // 合并文件ToolStripMenuItem
             // 
             this.合并文件ToolStripMenuItem.Name = "合并文件ToolStripMenuItem";
-            this.合并文件ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.合并文件ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.合并文件ToolStripMenuItem.Text = "合并数据库";
             this.合并文件ToolStripMenuItem.Click += new System.EventHandler(this.MergeFile_Click);
             // 
@@ -120,7 +120,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "TestResultAnalyzer";
+            this.Text = "原动力测试数据分析软件";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
