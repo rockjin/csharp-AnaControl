@@ -34,14 +34,35 @@ namespace AnaControl.Controls.TimeDistribution
         {
             List<long> types = new List<long>();
             string sqlCmd = "select distinct(t1.TEST_ID) from TEST_TIME_DISTRIBUTION t1,"
-                + "test_results t2 "
-                + "where t2.test_time >= "
-                + "#" + Properties.Settings.Default.DefaultDateTimeStart.ToString("yyyy-MM-dd HH:mm:ss") + "#"
-                + "and t2.test_time < "
-                + "#" + Properties.Settings.Default.DefaultDateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss") + "#"
-                + "and t1.test_id = t2.test_id "
-                + "and t2.STATION like '%" + Properties.Settings.Default.DefaultTestBench + "%' "
-                + "and t2.PRODUCT_NAME like '%" + Properties.Settings.Default.ProductType + "%' ";
+                + " test_results t2 "
+                + " where t2.test_time >= "
+                + " #" + Properties.Settings.Default.DefaultDateTimeStart.ToString("yyyy-MM-dd HH:mm:ss") + "# "
+                + " and t2.test_time < "
+                + " #" + Properties.Settings.Default.DefaultDateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss") + "# "
+                + " and t1.test_id = t2.test_id "
+                + " and t2.STATION like '%" + Properties.Settings.Default.DefaultTestBench + "%' "
+                + " and t2.PRODUCT_NAME like '%" + Properties.Settings.Default.ProductType + "%' "
+                + " and (t2.test_id in( "
+                + " select test_id from ("
+                + " select test_id,count(test_id) as num from test_item_values "
+                + " group by test_id"
+                + " ) t1_1,"
+                + " ("
+                + " select max(num) as maxNum from "
+                + " ("
+                + " select count(st1.test_id) as num "
+                + " from test_item_values st1, test_results st2 "
+                + " where st2.test_time >= "
+                + " #" + Properties.Settings.Default.DefaultDateTimeStart.ToString("yyyy-MM-dd HH:mm:ss") + "# "
+                + " and st2.test_time < "
+                + " #" + Properties.Settings.Default.DefaultDateTimeEnd.ToString("yyyy-MM-dd HH:mm:ss") + "# "
+                + " and st2.STATION like '%" + Properties.Settings.Default.DefaultTestBench + "%' "
+                + " and st2.PRODUCT_NAME like '%" + Properties.Settings.Default.ProductType + "%' "
+                + " and st1.test_id = st2.test_id "
+                + " group by st1.test_id"
+                + ") as tab1) as t2_1"
+                + " where t1_1.num = t2_1.maxNum "
+                + " ))";
             DataTable dt = _db.GetDataTable(sqlCmd);
             int TotalNumber = Properties.Settings.Default.DefaultTestDataUpLimit;
             if (dt.Rows.Count < TotalNumber)
