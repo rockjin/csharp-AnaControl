@@ -133,6 +133,9 @@
     <Compile Include="Controls\Capacitys\CapacitySettings.Designer.cs">
       <DependentUpon>CapacitySettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\Efficiency\EfficiencyAna.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Controls\FpyCapacitys\FpyCapacity.cs">
       <SubType>UserControl</SubType>
     </Compile>

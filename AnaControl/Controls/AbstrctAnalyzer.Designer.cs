@@ -32,6 +32,11 @@
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint1 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, -1D);
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint2 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(-1D, 0D);
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint3 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 1D);
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint4 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(1D, 0D);
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint5 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 0D);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.tsbDrawChart = new System.Windows.Forms.ToolStripButton();
             this.tsbSaveChart = new System.Windows.Forms.ToolStripButton();
@@ -67,7 +72,7 @@
             this.tsbDrawChart.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbDrawChart.Name = "tsbDrawChart";
             this.tsbDrawChart.Size = new System.Drawing.Size(36, 36);
-            this.tsbDrawChart.Text = "toolStripButton1";
+            this.tsbDrawChart.Text = "绘制图像";
             this.tsbDrawChart.Click += new System.EventHandler(this.tsbDrawChart_Click);
             // 
             // tsbSaveChart
@@ -77,7 +82,7 @@
             this.tsbSaveChart.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbSaveChart.Name = "tsbSaveChart";
             this.tsbSaveChart.Size = new System.Drawing.Size(36, 36);
-            this.tsbSaveChart.Text = "toolStripButton2";
+            this.tsbSaveChart.Text = "保存数据";
             this.tsbSaveChart.Click += new System.EventHandler(this.tsbSaveChart_Click);
             // 
             // chart1
@@ -102,6 +107,11 @@
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
             series1.Legend = "Legend1";
             series1.Name = "Series1";
+            series1.Points.Add(dataPoint1);
+            series1.Points.Add(dataPoint2);
+            series1.Points.Add(dataPoint3);
+            series1.Points.Add(dataPoint4);
+            series1.Points.Add(dataPoint5);
             this.chart1.Series.Add(series1);
             this.chart1.Size = new System.Drawing.Size(492, 273);
             this.chart1.TabIndex = 1;
@@ -117,47 +127,47 @@
             this.miSaveData,
             this.miCopyData});
             this.contextMenuStrip_msChart.Name = "contextMenuStrip_msChart";
-            this.contextMenuStrip_msChart.Size = new System.Drawing.Size(153, 158);
+            this.contextMenuStrip_msChart.Size = new System.Drawing.Size(138, 136);
             this.contextMenuStrip_msChart.Text = "Save";
             // 
             // toolStripMenuItem_Save
             // 
             this.toolStripMenuItem_Save.Name = "toolStripMenuItem_Save";
-            this.toolStripMenuItem_Save.Size = new System.Drawing.Size(152, 22);
+            this.toolStripMenuItem_Save.Size = new System.Drawing.Size(137, 22);
             this.toolStripMenuItem_Save.Text = "Save";
             this.toolStripMenuItem_Save.Click += new System.EventHandler(this.toolStripMenuItem_Save_Click);
             // 
             // ToolStripMenuItem_3d
             // 
             this.ToolStripMenuItem_3d.Name = "ToolStripMenuItem_3d";
-            this.ToolStripMenuItem_3d.Size = new System.Drawing.Size(152, 22);
+            this.ToolStripMenuItem_3d.Size = new System.Drawing.Size(137, 22);
             this.ToolStripMenuItem_3d.Text = "3D";
             this.ToolStripMenuItem_3d.Click += new System.EventHandler(this.ToolStripMenuItem_3d_Click);
             // 
             // menuItemChartTypes
             // 
             this.menuItemChartTypes.Name = "menuItemChartTypes";
-            this.menuItemChartTypes.Size = new System.Drawing.Size(152, 22);
+            this.menuItemChartTypes.Size = new System.Drawing.Size(137, 22);
             this.menuItemChartTypes.Text = "图表类型";
             // 
             // TsbShowValueLabel
             // 
             this.TsbShowValueLabel.Name = "TsbShowValueLabel";
-            this.TsbShowValueLabel.Size = new System.Drawing.Size(152, 22);
+            this.TsbShowValueLabel.Size = new System.Drawing.Size(137, 22);
             this.TsbShowValueLabel.Text = "显示标签值";
             this.TsbShowValueLabel.Click += new System.EventHandler(this.TsbShowValueLabel_Click);
             // 
             // miSaveData
             // 
             this.miSaveData.Name = "miSaveData";
-            this.miSaveData.Size = new System.Drawing.Size(152, 22);
+            this.miSaveData.Size = new System.Drawing.Size(137, 22);
             this.miSaveData.Text = "Save Data";
             this.miSaveData.Click += new System.EventHandler(this.miSaveData_Click);
             // 
             // miCopyData
             // 
             this.miCopyData.Name = "miCopyData";
-            this.miCopyData.Size = new System.Drawing.Size(152, 22);
+            this.miCopyData.Size = new System.Drawing.Size(137, 22);
             this.miCopyData.Text = "Copy Data";
             this.miCopyData.Click += new System.EventHandler(this.miCopyData_Click);
             // 
