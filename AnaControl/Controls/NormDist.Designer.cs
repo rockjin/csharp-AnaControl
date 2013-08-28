@@ -38,12 +38,12 @@ namespace AnaControl.Controls
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NormDist));
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint1 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 0D);
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint2 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 0D);
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint1 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(1D, 5D);
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint2 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(1D, 9D);
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint3 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 0D);
             System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint4 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 0D);
             System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint5 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 0D);
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint6 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 0D);
             System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint7 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 0D);
             System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint8 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 0D);
@@ -62,12 +62,9 @@ namespace AnaControl.Controls
             System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint21 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 0D);
             System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint22 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 0D);
             System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint23 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 0D);
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint24 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 0D);
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint25 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 0D);
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint26 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, 0D);
             System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint27 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, "0,0,0");
-            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint28 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, "0,0,0");
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint24 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, "0,0,0");
+            System.Windows.Forms.DataVisualization.Charting.DataPoint dataPoint25 = new System.Windows.Forms.DataVisualization.Charting.DataPoint(0D, "0,0,0");
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.dateTimePicker_End = new System.Windows.Forms.DateTimePicker();
@@ -635,23 +632,25 @@ namespace AnaControl.Controls
             this.chart1.Location = new System.Drawing.Point(0, 0);
             this.chart1.Name = "chart1";
             series1.ChartArea = "ChartArea1";
-            series1.CustomProperties = "PointWidth=1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            series1.CustomProperties = "PointWidth=2";
+            series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Star10;
             series1.Name = "Series3";
             dataPoint1.AxisLabel = "122";
+            dataPoint1.BorderColor = System.Drawing.Color.Red;
+            dataPoint1.Color = System.Drawing.Color.Black;
             dataPoint1.Label = "123";
-            dataPoint2.AxisLabel = "333";
-            dataPoint3.AxisLabel = "444";
-            dataPoint4.AxisLabel = "555";
-            dataPoint5.AxisLabel = "666";
+            dataPoint1.MarkerSize = 15;
+            dataPoint2.Color = System.Drawing.Color.Red;
             series1.Points.Add(dataPoint1);
             series1.Points.Add(dataPoint2);
-            series1.Points.Add(dataPoint3);
-            series1.Points.Add(dataPoint4);
-            series1.Points.Add(dataPoint5);
             series2.ChartArea = "ChartArea1";
             series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             series2.Legend = "Legend1";
             series2.Name = "Series2";
+            series2.Points.Add(dataPoint3);
+            series2.Points.Add(dataPoint4);
+            series2.Points.Add(dataPoint5);
             series2.Points.Add(dataPoint6);
             series2.Points.Add(dataPoint7);
             series2.Points.Add(dataPoint8);
@@ -670,22 +669,19 @@ namespace AnaControl.Controls
             series2.Points.Add(dataPoint21);
             series2.Points.Add(dataPoint22);
             series2.Points.Add(dataPoint23);
-            series2.Points.Add(dataPoint24);
-            series2.Points.Add(dataPoint25);
-            series2.Points.Add(dataPoint26);
             series2.XAxisType = System.Windows.Forms.DataVisualization.Charting.AxisType.Secondary;
             series3.ChartArea = "ChartArea1";
             series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.ErrorBar;
             series3.Legend = "Legend1";
             series3.Name = "Series4";
-            dataPoint27.AxisLabel = "123";
-            dataPoint27.CustomProperties = "ErrorBarCenterMarkerStyle=None";
-            dataPoint27.IsVisibleInLegend = true;
-            dataPoint27.Label = "123";
-            dataPoint27.LegendText = "";
-            dataPoint28.Label = "567";
-            series3.Points.Add(dataPoint27);
-            series3.Points.Add(dataPoint28);
+            dataPoint24.AxisLabel = "123";
+            dataPoint24.CustomProperties = "ErrorBarCenterMarkerStyle=None";
+            dataPoint24.IsVisibleInLegend = true;
+            dataPoint24.Label = "123";
+            dataPoint24.LegendText = "";
+            dataPoint25.Label = "567";
+            series3.Points.Add(dataPoint24);
+            series3.Points.Add(dataPoint25);
             series3.YValuesPerPoint = 3;
             this.chart1.Series.Add(series1);
             this.chart1.Series.Add(series2);
@@ -701,34 +697,34 @@ namespace AnaControl.Controls
             this.ToolStripMenuItem_CopyBmp,
             this.ToolStripMenuItem_CopyData});
             this.contextMenuStrip_msChart.Name = "contextMenuStrip_msChart";
-            this.contextMenuStrip_msChart.Size = new System.Drawing.Size(125, 92);
+            this.contextMenuStrip_msChart.Size = new System.Drawing.Size(123, 92);
             this.contextMenuStrip_msChart.Text = "Save";
             // 
             // ParameterSetting
             // 
             this.ParameterSetting.Name = "ParameterSetting";
-            this.ParameterSetting.Size = new System.Drawing.Size(124, 22);
+            this.ParameterSetting.Size = new System.Drawing.Size(122, 22);
             this.ParameterSetting.Text = "参数配置";
             this.ParameterSetting.Click += new System.EventHandler(this.ParameterSetting_Click);
             // 
             // toolStripMenuItem_Save
             // 
             this.toolStripMenuItem_Save.Name = "toolStripMenuItem_Save";
-            this.toolStripMenuItem_Save.Size = new System.Drawing.Size(124, 22);
+            this.toolStripMenuItem_Save.Size = new System.Drawing.Size(122, 22);
             this.toolStripMenuItem_Save.Text = "保存数据";
             this.toolStripMenuItem_Save.Click += new System.EventHandler(this.toolStripMenuItem_Save_Click);
             // 
             // ToolStripMenuItem_CopyBmp
             // 
             this.ToolStripMenuItem_CopyBmp.Name = "ToolStripMenuItem_CopyBmp";
-            this.ToolStripMenuItem_CopyBmp.Size = new System.Drawing.Size(124, 22);
+            this.ToolStripMenuItem_CopyBmp.Size = new System.Drawing.Size(122, 22);
             this.ToolStripMenuItem_CopyBmp.Text = "拷贝图片";
             this.ToolStripMenuItem_CopyBmp.Click += new System.EventHandler(this.ToolStripMenuItem_CopyBmp_Click);
             // 
             // ToolStripMenuItem_CopyData
             // 
             this.ToolStripMenuItem_CopyData.Name = "ToolStripMenuItem_CopyData";
-            this.ToolStripMenuItem_CopyData.Size = new System.Drawing.Size(124, 22);
+            this.ToolStripMenuItem_CopyData.Size = new System.Drawing.Size(122, 22);
             this.ToolStripMenuItem_CopyData.Text = "拷贝数据";
             this.ToolStripMenuItem_CopyData.Click += new System.EventHandler(this.ToolStripMenuItem_CopyData_Click);
             // 

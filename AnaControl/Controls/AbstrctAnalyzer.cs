@@ -53,6 +53,18 @@ namespace AnaControl.Controls
         {
             try
             {
+                this.Invoke(new Action(delegate()
+                {
+                    this.Controls.Remove(chart1);
+                    chart1 = new Chart();
+                    this.chart1.BackColor = System.Drawing.SystemColors.AppWorkspace;
+                    this.chart1.ContextMenuStrip = this.contextMenuStrip_msChart;
+                    this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
+                    this.chart1.Name = "chart1";
+                    this.chart1.TabIndex = 1;
+                    this.chart1.Text = "chart1";
+                    this.Controls.Add(chart1);
+                }));
                 RefreshChart();
             }
             catch (Exception exp)

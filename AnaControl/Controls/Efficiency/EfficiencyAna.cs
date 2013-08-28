@@ -14,7 +14,7 @@ namespace AnaControl.Controls.Efficiency
     {
         protected override void RefreshChart()
         {
-            string sqlCmd = string.Format("select distince(t1.ITEM_NAME) "
+            string sqlCmd = string.Format("select distinct(t1.ITEM_NAME) "
                 + " from test_time_distribution as t1 inner join "
                 + " test_result as t2 on t1.test_id = t2.test_id "
                 + " where t2.test_time >= "

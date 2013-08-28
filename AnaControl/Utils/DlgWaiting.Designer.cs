@@ -43,6 +43,7 @@
             this.Text = "计算中。。。";
             this.TransparencyKey = System.Drawing.SystemColors.Control;
             this.Load += new System.EventHandler(this.DlgWaiting_Load);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.DlgWaiting_KeyUp);
             this.ResumeLayout(false);
 
         }

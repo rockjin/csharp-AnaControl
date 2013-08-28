@@ -51,7 +51,7 @@ namespace AnaControl.Utils
                 {
                     sb.Append("。");
                 }
-                msg = "请耐心等待" + sb.ToString();
+                msg = "请耐心等待" + sb.ToString() + "\n按ESC键终止操作!";
                 this.SafeRefresh();
                 Thread.Sleep(100);
             }
@@ -85,5 +85,16 @@ namespace AnaControl.Utils
         }
 
         private Thread bw;
+
+        private void DlgWaiting_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                if (bw.IsAlive)
+                {
+                    bw.Abort();
+                }
+            }
+        }
     }
 }
