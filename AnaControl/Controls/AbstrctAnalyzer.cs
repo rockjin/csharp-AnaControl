@@ -37,6 +37,7 @@ namespace AnaControl.Controls
         private void tsbDrawChart_Click(object sender, EventArgs e)
         {
             if (!Setting()) return;
+            this.ToolStripMenuItem_3d.Checked = false;
             DlgWaiting wait = new DlgWaiting();
             wait.OnAction += dlg_OnAction;
             wait.ShowDialog();
@@ -59,12 +60,21 @@ namespace AnaControl.Controls
                     chart1 = new Chart();
                     this.chart1.BackColor = System.Drawing.SystemColors.AppWorkspace;
                     this.chart1.ContextMenuStrip = this.contextMenuStrip_msChart;
-                    this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;
+                    this.chart1.Dock = System.Windows.Forms.DockStyle.Fill;                    
                     this.chart1.Name = "chart1";
                     this.chart1.TabIndex = 1;
                     this.chart1.Text = "chart1";
                     this.Controls.Add(chart1);
+                    this.chart1.BringToFront();
                 }));
+                var st = (SeriesChartType)Enum.Parse(typeof(SeriesChartType), Properties.Settings.Default.DefaultChartType);
+                switch (st)
+                {
+                    case SeriesChartType.Renko:
+                    case SeriesChartType.ThreeLineBreak:
+                        Properties.Settings.Default.DefaultChartType = SeriesChartType.Line.ToString();
+                        break;
+                }
                 RefreshChart();
             }
             catch (Exception exp)

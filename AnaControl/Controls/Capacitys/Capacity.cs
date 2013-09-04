@@ -189,11 +189,15 @@ namespace AnaControl.Controls.Capacitys
             {
                 #region ////////////////////////////////产能分析////////////////////////////////////////
 
-                var st = (SeriesChartType)Enum.Parse(typeof(SeriesChartType), Properties.Settings.Default.DefaultChartType);
+                var st = (SeriesChartType)Enum.Parse(typeof(SeriesChartType), Properties.Settings.Default.DefaultChartType);               
                 switch (st)
                 {
                     case SeriesChartType.Pie:
                         this.DrawChartCapacity2();
+                        break;
+                    case SeriesChartType.Renko:
+                        Properties.Settings.Default.DefaultChartType = SeriesChartType.Line.ToString();
+                        this.DrawChartCapacity();
                         break;
                     default:
                         this.DrawChartCapacity();

@@ -18,6 +18,7 @@ namespace AnaControl.Scripts
                     }
                     return false;
                 });
+            if (se == null) return;
             List<int> indexs = new List<int>();
             int count = 0;
             foreach (DataPoint dp in se.Points)
