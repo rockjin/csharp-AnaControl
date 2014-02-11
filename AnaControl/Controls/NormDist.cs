@@ -199,11 +199,15 @@ namespace AnaControl.Controls
             {
                 InvokeOnLog("remove repeats\n");
                 sqlCmd += " ,("
-                          + " select max(test_id) as test_id,product_sn,test_item_name "
-                          + " from TEST_ITEM_VALUES "
-                          + " group by product_sn,test_item_name"
+                          + " select max(tt1.test_id) as test_id2,tt1.product_sn,tt1.test_item_name "
+                          + " from TEST_ITEM_VALUES tt1,test_results tt2"
+                          + " where tt1.test_item_name like '" + matchString + "' "
+                          + " and tt1.test_id = tt2.test_id "
+                          + " and tt2.STATION like '%" + Properties.Settings.Default.DefaultTestBench + "%' "
+                          + " and tt2.PRODUCT_NAME like '%" + Properties.Settings.Default.ProductType + "%' "
+                          + " group by tt1.product_sn,tt1.test_item_name "
                           + ") t3"
-                          + " where t2.test_id = t3.test_id and t1.test_item_name = t3.test_item_name and ";
+                          + " where t2.test_id = t3.test_id2 and t1.test_item_name = t3.test_item_name and ";
             }
             else
             {
