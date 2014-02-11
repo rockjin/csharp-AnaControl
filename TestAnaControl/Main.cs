@@ -265,6 +265,7 @@ namespace TestAnaControl
                             nr["PRODUCT_SN"] = row["PRODUCT_SN"];
                             nr["TEST_TIME"] = row["TEST_TIME"];
                             nr["TEST_ITEM_NAME"] = row["TEST_ITEM_NAME"];
+                            nr["PASS_STATE"] = row["PASS_STATE"];
                             if (double.IsInfinity((double)row["ITEM_VALUE"]))
                             {
                                 if (double.IsNegativeInfinity((double)row["ITEM_VALUE"]))
