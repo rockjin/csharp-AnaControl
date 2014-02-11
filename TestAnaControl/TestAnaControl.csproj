@@ -212,6 +212,9 @@
     <Content Include="kchart.ico" />
     <Content Include="Microsoft.Data.ConnectionUI.Dialog.dll" />
     <Content Include="Microsoft.Data.ConnectionUI.dll" />
+    <Content Include="readme.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

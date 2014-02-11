@@ -112,11 +112,15 @@ namespace AnaControl.Controls
             {
                 InvokeOnLog("remove repeats\n");
                 sqlCmd += " ,("
-                          + " select max(test_id) as test_id,product_sn,test_item_name "
-                          + " from TEST_ITEM_VALUES "
-                          + " group by product_sn,test_item_name"
+                          + " select max(tt1.test_id) as test_id2,tt1.product_sn,tt1.test_item_name "
+                          + " from TEST_ITEM_VALUES tt1,test_results tt2"                          
+                          + " where tt1.test_item_name like '" + matchString + "' "
+                          + " and tt1.test_id = tt2.test_id "
+                          + " and tt2.STATION like '%" + Properties.Settings.Default.DefaultTestBench + "%' "
+                          + " and tt2.PRODUCT_NAME like '%" + Properties.Settings.Default.ProductType + "%' "
+                          + " group by tt1.product_sn,tt1.test_item_name "
                           + ") t3"
-                          + " where t2.test_id = t3.test_id and t1.test_item_name = t3.test_item_name and ";
+                          + " where t2.test_id = t3.test_id2 and t1.test_item_name = t3.test_item_name and ";
             }
             else
             {
@@ -156,7 +160,7 @@ namespace AnaControl.Controls
             _max = dt.Rows[0]["maxVal"].ToString();
             _min = dt.Rows[0]["minVal"].ToString();
             _lsl = double.IsInfinity(double.Parse(dt.Rows[0]["lowLimit"].ToString())) ? "-100" : dt.Rows[0]["lowLimit"].ToString();
-            _usl = double.IsInfinity(double.Parse(dt.Rows[0]["upLimit"].ToString())) ? "100" : dt.Rows[0]["upLimit"].ToString();
+            _usl = double.IsInfinity(double.Parse(dt.Rows[0]["upLimit"].ToString())) ? "100" : dt.Rows[0]["upLimit"].ToString();            
             _totalCount = dt.Rows[0]["totalVal"].ToString();
             _average = dt.Rows[0]["avgVal"].ToString();
             _sigma = dt.Rows[0]["stdVal"].ToString();
@@ -174,8 +178,19 @@ namespace AnaControl.Controls
                 }
                 _p3Sigma = (a + s * 3).ToString();
                 _m3Sigma = (a - s * 3).ToString();
-            }
-
+                double dlsl = double.Parse(_lsl);
+                double dusl=double.Parse(_usl);
+                if (dlsl < a - s * 6)
+                {
+                    dlsl = a - s * 6;
+                }
+                if(dusl > a + s * 6)
+                {
+                    dusl = a + s * 6;
+                }
+                _lsl = dlsl.ToString();
+                _usl = dusl.ToString();
+            }            
 
             sqlCmd = "SELECT t1.item_value "
                         + "from TEST_ITEM_VALUES t1, TEST_RESULTS t2 ";                       

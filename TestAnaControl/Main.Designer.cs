@@ -54,9 +54,9 @@
             // panel1
             // 
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 24);
+            this.panel1.Location = new System.Drawing.Point(0, 25);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(784, 600);
+            this.panel1.Size = new System.Drawing.Size(784, 599);
             this.panel1.TabIndex = 3;
             // 
             // statusStrip1
@@ -74,7 +74,7 @@
             this.tsMenuSelector});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(784, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(784, 25);
             this.menuStrip1.TabIndex = 5;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -84,27 +84,27 @@
             this.打开文件ToolStripMenuItem,
             this.合并文件ToolStripMenuItem});
             this.文件FToolStripMenuItem.Name = "文件FToolStripMenuItem";
-            this.文件FToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
+            this.文件FToolStripMenuItem.Size = new System.Drawing.Size(58, 21);
             this.文件FToolStripMenuItem.Text = "文件(&F)";
             // 
             // 打开文件ToolStripMenuItem
             // 
             this.打开文件ToolStripMenuItem.Name = "打开文件ToolStripMenuItem";
-            this.打开文件ToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.打开文件ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.打开文件ToolStripMenuItem.Text = "打开数据库";
             this.打开文件ToolStripMenuItem.Click += new System.EventHandler(this.OpenFile_Click);
             // 
             // 合并文件ToolStripMenuItem
             // 
             this.合并文件ToolStripMenuItem.Name = "合并文件ToolStripMenuItem";
-            this.合并文件ToolStripMenuItem.Size = new System.Drawing.Size(134, 22);
+            this.合并文件ToolStripMenuItem.Size = new System.Drawing.Size(136, 22);
             this.合并文件ToolStripMenuItem.Text = "合并数据库";
             this.合并文件ToolStripMenuItem.Click += new System.EventHandler(this.MergeFile_Click);
             // 
             // tsMenuSelector
             // 
             this.tsMenuSelector.Name = "tsMenuSelector";
-            this.tsMenuSelector.Size = new System.Drawing.Size(43, 20);
+            this.tsMenuSelector.Size = new System.Drawing.Size(44, 21);
             this.tsMenuSelector.Text = "选项";
             // 
             // MainForm
@@ -120,7 +120,7 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "原动力测试数据分析软件";
+            this.Text = "原动力测试数据分析软件 V1.0.1";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyUp);
             this.menuStrip1.ResumeLayout(false);
