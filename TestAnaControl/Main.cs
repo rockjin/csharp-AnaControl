@@ -6,6 +6,7 @@ using DbDriver;
 using System;
 using System.Data;
 using System.Data.OleDb;
+using System.Reflection;
 using System.Windows.Forms;
 using TestAnaControl.Utils;
 
@@ -347,6 +348,12 @@ namespace TestAnaControl
             {
                 Stop = true;
             }
+        }
+
+        private void ToolStripMenuItemAbout_Click(object sender, EventArgs e)
+        {
+            AboutBox dlg = new AboutBox();
+            dlg.ShowDialog(this);
         }
 
     }

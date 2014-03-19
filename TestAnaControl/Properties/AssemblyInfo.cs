@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("原动力测试数据分析软件 V2.0")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("原动力测试数据分析软件 V1.1.2")]
+[assembly: AssemblyDescription("上海原动力通信设备有限公司，技术部开发。")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("原动力")]
-[assembly: AssemblyProduct("测试数据分析软件")]
+[assembly: AssemblyCompany("上海原动力通信设备有限公司。")]
+[assembly: AssemblyProduct("原动力测试数据分析软件")]
 [assembly: AssemblyCopyright("Copyright © YUANDONGLI 2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.1.2")]
+[assembly: AssemblyFileVersion("1.1.2")]
