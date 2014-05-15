@@ -47,12 +47,13 @@ namespace TestAnaControl
             this.panel1.Controls.Clear();
             ToolStripMenuItem mi = sender as ToolStripMenuItem;
             if(mi == null) return;
-            AbstrctAnalyzer dlg = AnaFactory.CreateAna(mi.Text);
+            IAbstrctAnalyzer dlg = AnaFactory.CreateAna(mi.Text);
             if (dlg == null) return;
             dlg.Db.Conn = new OleDbConnection(ConnectionBuilder.Instance.Conn);
-            dlg.Parent = this.panel1;
-            dlg.Dock = DockStyle.Fill;
-            dlg.Show();
+            UserControl uc = (UserControl)dlg;
+            uc.Parent = this.panel1;
+            uc.Dock = DockStyle.Fill;
+            uc.Show();
             dlg.OnLog += OnMessageLog;
         }
 

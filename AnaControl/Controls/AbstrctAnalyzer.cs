@@ -15,7 +15,7 @@ using System.IO;
 
 namespace AnaControl.Controls
 {
-    public partial class AbstrctAnalyzer : UserControl
+    public partial class AbstrctAnalyzer : UserControl, AnaControl.Controls.IAbstrctAnalyzer
     {
 
         protected static int _rotateColor = (int)KnownColor.Red;
@@ -247,7 +247,7 @@ namespace AnaControl.Controls
 
         protected List<Series> _bkSeries = new List<Series>();
 
-        private void miSaveData_Click(object sender, EventArgs e)
+        protected void miSaveData_Click(object sender, EventArgs e)
         {
             try
             {
@@ -316,14 +316,14 @@ namespace AnaControl.Controls
 
     public static class AnaFactory
     {
-        public static AbstrctAnalyzer CreateAna(string name)
+        public static IAbstrctAnalyzer CreateAna(string name)
         {
             Assembly asm = Assembly.GetExecutingAssembly();
             foreach (Type type in asm.GetExportedTypes())
             {
                 if (!type.IsInterface
                     && !type.IsAbstract
-                    && type.IsSubclassOf(typeof(AbstrctAnalyzer)))
+                    && type.GetInterface(typeof(IAbstrctAnalyzer).Name) != null)
                 {
                     object[] attr = type.GetCustomAttributes(typeof(DisplayNameAttribute), false);
                     if (attr.Length == 0)
@@ -337,7 +337,7 @@ namespace AnaControl.Controls
                     var obj = asm.CreateInstance(type.FullName);
                     if (obj != null)
                     {
-                        return obj as AbstrctAnalyzer;
+                        return obj as IAbstrctAnalyzer;
                     }
                 }
             }
@@ -352,7 +352,7 @@ namespace AnaControl.Controls
             {
                 if (!type.IsInterface
                     && !type.IsAbstract
-                    && type.IsSubclassOf(typeof(AbstrctAnalyzer)))
+                    && type.GetInterface(typeof(IAbstrctAnalyzer).Name) != null)
                 {
                     object[] attr = type.GetCustomAttributes(typeof(DisplayNameAttribute), false);
                     if (attr.Length != 0)
