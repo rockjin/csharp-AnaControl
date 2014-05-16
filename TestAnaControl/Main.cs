@@ -15,9 +15,26 @@ namespace TestAnaControl
     public partial class MainForm : Form
     {
         private bool Stop;
+        public string AssemblyTitle
+        {
+            get
+            {
+                object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
+                if (attributes.Length > 0)
+                {
+                    AssemblyTitleAttribute titleAttribute = (AssemblyTitleAttribute)attributes[0];
+                    if (titleAttribute.Title != "")
+                    {
+                        return titleAttribute.Title;
+                    }
+                }
+                return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
+            }
+        }
         public MainForm()
         {
             InitializeComponent();
+            this.Text = AssemblyTitle;
             string[] types = AnaFactory.GetAnalyzers();
             ToolStripMenuItem tm = new ToolStripMenuItem();
             tm.Text = "指标分析";

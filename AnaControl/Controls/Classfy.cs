@@ -408,7 +408,9 @@ namespace AnaControl.Controls
             this.AcceptButton = btnOk;
             this.CancelButton = btnCancel;
             itemType = new ItemType();
-            grid.SelectedObject = itemType;           
+            grid.SelectedObject = itemType;
+            db.time_start = Properties.Settings.Default.DefaultDateTimeStart;
+            db.time_end = Properties.Settings.Default.DefaultDateTimeEnd;
             string sql = string.Format("select distinct(test_item_name) from test_item_values"
                 + " where test_time between #{0}# and #{1}#", db.time_start, db.time_end);
             DataTable dt = db.GetDataTable(sql);
