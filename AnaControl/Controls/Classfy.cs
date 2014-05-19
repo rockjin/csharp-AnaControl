@@ -104,19 +104,20 @@ namespace AnaControl.Controls
         private void ReadData()
         {
             DataTable table = new DataTable("results");
-            if (this.checkBoxMergeBySn.Checked)
-            {
-                table.Columns.Add("Sn");
-                table.Columns.Add("TestItemName");
-                table.PrimaryKey = new DataColumn[] { table.Columns[0],table.Columns[1]};
-            }
-            else
+            List<DataColumn> columns = new List<DataColumn>();
+            if (this.checkBoxAddTestTime.Checked)
             {
                 table.Columns.Add("TestTime", typeof(DateTime));
-                table.Columns.Add("Sn");
-                table.Columns.Add("TestItemName");
-                table.PrimaryKey = new DataColumn[] { table.Columns[0], table.Columns[1],table.Columns[2] };
+                columns.Add(table.Columns["TestTime"]);
             }
+            table.Columns.Add("Sn");
+            columns.Add(table.Columns["Sn"]);
+            if (this.checkBoxAddTestItemName.Checked)
+            {
+                table.Columns.Add("TestItemName");
+                columns.Add(table.Columns["TestItemName"]);
+            }
+            table.PrimaryKey = columns.ToArray();
             foreach(ListViewItem item in listView2.Items)
             {
                 table.Columns.Add(item.Text);
@@ -195,45 +196,51 @@ namespace AnaControl.Controls
                 {
                     if (dts[j].Rows.Count <= i) break;
                     DataRow row;
-                    if (this.checkBoxMergeBySn.Checked)
+                    List<object> keys = new List<object>();
+                    int offset = 1;
+                    if(checkBoxAddTestTime.Checked)
                     {
-                        row = table.Rows.Find(new object[] { dts[j].Rows[i]["product_sn"].ToString().Trim(), dts[j].Rows[i]["test_item_name"].ToString().Trim() });
+                        keys.Add(dts[j].Rows[i]["test_time"]);
+                        offset++;
                     }
-                    else
+                    keys.Add(dts[j].Rows[i]["product_sn"].ToString().Trim());
+                    if(checkBoxAddTestItemName.Checked)
                     {
-                        row = table.Rows.Find(new object[] { dts[j].Rows[i]["test_time"], dts[j].Rows[i]["product_sn"].ToString().Trim(), dts[j].Rows[i]["test_item_name"].ToString().Trim()});
+                        keys.Add(dts[j].Rows[i]["test_item_name"].ToString().Trim());
+                        offset++;
                     }
+                    row = table.Rows.Find(keys.ToArray());
                     if (row != null)
                     {
-                        if (this.checkBoxMergeBySn.Checked)
+                        if (this.checkBoxAddTestItemName.Checked)
                         {
-                            row[j + 2] = dts[j].Rows[i]["item_value"];
+                            row[j + offset] = dts[j].Rows[i]["item_value"];
                         }
                         else
                         {
-                            row[j + 3] = dts[j].Rows[i]["item_value"];
+                            row[j + offset] = dts[j].Rows[i]["item_value"];
                         }
                     }
                     else
                     {
-                        row = table.NewRow();
-                        if (this.checkBoxMergeBySn.Checked)
+                        row = table.NewRow();                        
+                        if(checkBoxAddTestTime.Checked)
                         {
-                            row[0] = dts[j].Rows[i]["product_sn"].ToString().Trim();
-                            row[1] = dts[j].Rows[i]["test_item_name"].ToString().Trim();
-                            row[j + 2] = dts[j].Rows[i]["item_value"];
+                            row["TestTime"] = dts[j].Rows[i]["test_time"];
                         }
-                        else
+                        row["Sn"] = row[1] = dts[j].Rows[i]["product_sn"].ToString().Trim();
+                        if(checkBoxAddTestItemName.Checked)
                         {
-                            row[0] = dts[j].Rows[i]["test_time"];
-                            row[1] = dts[j].Rows[i]["product_sn"].ToString().Trim();
-                            row[2] = dts[j].Rows[i]["test_item_name"].ToString().Trim();
-                            row[j + 3] = dts[j].Rows[i]["item_value"];
+                            row["TestItemName"] = dts[j].Rows[i]["test_item_name"].ToString().Trim();
                         }
+                        row[j + offset] = dts[j].Rows[i]["item_value"];                        
                         table.Rows.Add(row);
                     }
                 }
             }
+            this.gridView.DataSource = null;
+            this.gridView.Rows.Clear();
+            this.gridView.Columns.Clear();
             this.gridView.DataSource = table;
             this.gridView.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.gridView.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 12, FontStyle.Bold);

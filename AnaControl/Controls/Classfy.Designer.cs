@@ -40,9 +40,10 @@
             this.copyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.checkBoxMergeBySn = new System.Windows.Forms.CheckBox();
+            this.checkBoxAddTestItemName = new System.Windows.Forms.CheckBox();
             this.buttonConditions = new System.Windows.Forms.Button();
             this.buttonOk = new System.Windows.Forms.Button();
+            this.checkBoxAddTestTime = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.contextMenuStripGridView.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -158,7 +159,8 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.checkBoxMergeBySn);
+            this.panel1.Controls.Add(this.checkBoxAddTestTime);
+            this.panel1.Controls.Add(this.checkBoxAddTestItemName);
             this.panel1.Controls.Add(this.buttonConditions);
             this.panel1.Controls.Add(this.buttonOk);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -167,16 +169,16 @@
             this.panel1.Size = new System.Drawing.Size(690, 41);
             this.panel1.TabIndex = 4;
             // 
-            // checkBoxMergeBySn
+            // checkBoxAddTestItemName
             // 
-            this.checkBoxMergeBySn.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.checkBoxAddTestItemName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.checkBoxMergeBySn.Location = new System.Drawing.Point(409, 3);
-            this.checkBoxMergeBySn.Name = "checkBoxMergeBySn";
-            this.checkBoxMergeBySn.Size = new System.Drawing.Size(104, 35);
-            this.checkBoxMergeBySn.TabIndex = 2;
-            this.checkBoxMergeBySn.Text = "条码数据合并";
-            this.checkBoxMergeBySn.UseVisualStyleBackColor = true;
+            this.checkBoxAddTestItemName.Location = new System.Drawing.Point(393, 3);
+            this.checkBoxAddTestItemName.Name = "checkBoxAddTestItemName";
+            this.checkBoxAddTestItemName.Size = new System.Drawing.Size(120, 35);
+            this.checkBoxAddTestItemName.TabIndex = 2;
+            this.checkBoxAddTestItemName.Text = "添加测试项名称列";
+            this.checkBoxAddTestItemName.UseVisualStyleBackColor = true;
             // 
             // buttonConditions
             // 
@@ -201,6 +203,17 @@
             this.buttonOk.Text = "Next->";
             this.buttonOk.UseVisualStyleBackColor = true;
             this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
+            // 
+            // checkBoxAddTestTime
+            // 
+            this.checkBoxAddTestTime.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkBoxAddTestTime.Location = new System.Drawing.Point(283, 4);
+            this.checkBoxAddTestTime.Name = "checkBoxAddTestTime";
+            this.checkBoxAddTestTime.Size = new System.Drawing.Size(104, 35);
+            this.checkBoxAddTestTime.TabIndex = 3;
+            this.checkBoxAddTestTime.Text = "添加时间列";
+            this.checkBoxAddTestTime.UseVisualStyleBackColor = true;
             // 
             // Classfy
             // 
@@ -233,7 +246,8 @@
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.Button buttonConditions;
-        private System.Windows.Forms.CheckBox checkBoxMergeBySn;
+        private System.Windows.Forms.CheckBox checkBoxAddTestItemName;
+        private System.Windows.Forms.CheckBox checkBoxAddTestTime;
 
     }
 }
