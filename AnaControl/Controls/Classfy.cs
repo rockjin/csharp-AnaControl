@@ -107,13 +107,15 @@ namespace AnaControl.Controls
             if (this.checkBoxMergeBySn.Checked)
             {
                 table.Columns.Add("Sn");
-                table.PrimaryKey = new DataColumn[] { table.Columns[0]};
+                table.Columns.Add("TestItemName");
+                table.PrimaryKey = new DataColumn[] { table.Columns[0],table.Columns[1]};
             }
             else
             {
                 table.Columns.Add("TestTime", typeof(DateTime));
                 table.Columns.Add("Sn");
-                table.PrimaryKey = new DataColumn[] { table.Columns[0], table.Columns[1] };
+                table.Columns.Add("TestItemName");
+                table.PrimaryKey = new DataColumn[] { table.Columns[0], table.Columns[1],table.Columns[2] };
             }
             foreach(ListViewItem item in listView2.Items)
             {
@@ -123,7 +125,7 @@ namespace AnaControl.Controls
             int maxLine = 0;
             foreach(ListViewItem item in listView2.Items)
             {
-                string sqlCmd = string.Format("select t1.test_time,t1.product_sn,t1.item_value from TEST_ITEM_VALUES t1, TEST_RESULTS t2 ");
+                string sqlCmd = string.Format("select t1.test_time,t1.product_sn,t1.test_item_name,t1.item_value from TEST_ITEM_VALUES t1, TEST_RESULTS t2 ");
                 InvokeOnLog("create sql cmd...\n");
                 string matchString = "";
                 if (Properties.Settings.Default.AutoWildcard)
@@ -195,21 +197,21 @@ namespace AnaControl.Controls
                     DataRow row;
                     if (this.checkBoxMergeBySn.Checked)
                     {
-                        row = table.Rows.Find(new object[] { dts[j].Rows[i]["product_sn"] });
+                        row = table.Rows.Find(new object[] { dts[j].Rows[i]["product_sn"].ToString().Trim(), dts[j].Rows[i]["test_item_name"].ToString().Trim() });
                     }
                     else
                     {
-                        row = table.Rows.Find(new object[] { dts[j].Rows[i]["test_time"], dts[j].Rows[i]["product_sn"] });
+                        row = table.Rows.Find(new object[] { dts[j].Rows[i]["test_time"], dts[j].Rows[i]["product_sn"].ToString().Trim(), dts[j].Rows[i]["test_item_name"].ToString().Trim()});
                     }
                     if (row != null)
                     {
                         if (this.checkBoxMergeBySn.Checked)
                         {
-                            row[j + 1] = dts[j].Rows[i]["item_value"];
+                            row[j + 2] = dts[j].Rows[i]["item_value"];
                         }
                         else
                         {
-                            row[j + 2] = dts[j].Rows[i]["item_value"];
+                            row[j + 3] = dts[j].Rows[i]["item_value"];
                         }
                     }
                     else
@@ -217,14 +219,16 @@ namespace AnaControl.Controls
                         row = table.NewRow();
                         if (this.checkBoxMergeBySn.Checked)
                         {
-                            row[0] = dts[j].Rows[i]["product_sn"];
-                            row[j + 1] = dts[j].Rows[i]["item_value"];
+                            row[0] = dts[j].Rows[i]["product_sn"].ToString().Trim();
+                            row[1] = dts[j].Rows[i]["test_item_name"].ToString().Trim();
+                            row[j + 2] = dts[j].Rows[i]["item_value"];
                         }
                         else
                         {
                             row[0] = dts[j].Rows[i]["test_time"];
-                            row[1] = dts[j].Rows[i]["product_sn"];
-                            row[j + 2] = dts[j].Rows[i]["item_value"];
+                            row[1] = dts[j].Rows[i]["product_sn"].ToString().Trim();
+                            row[2] = dts[j].Rows[i]["test_item_name"].ToString().Trim();
+                            row[j + 3] = dts[j].Rows[i]["item_value"];
                         }
                         table.Rows.Add(row);
                     }
@@ -234,6 +238,7 @@ namespace AnaControl.Controls
             this.gridView.ColumnHeadersDefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
             this.gridView.ColumnHeadersDefaultCellStyle.Font = new Font("Arial", 12, FontStyle.Bold);
             this.gridView.AutoResizeColumnHeadersHeight();
+            this.gridView.AutoResizeColumns();
         }
         private class RowComparer : System.Collections.IComparer
         {
