@@ -6,6 +6,8 @@ using DbDriver;
 using System;
 using System.Data;
 using System.Data.OleDb;
+using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using TestAnaControl.Utils;
@@ -372,6 +374,19 @@ namespace TestAnaControl
         {
             AboutBox dlg = new AboutBox();
             dlg.ShowDialog(this);
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if(File.Exists("SnapShot.exe"))
+            {
+                File.Delete("SnapShot.exe");
+            }
+            File.WriteAllBytes("SnapShot.exe", Properties.Resources.SnapShot);
+            Process proc = new Process();
+            proc.StartInfo.FileName = "SnapShot.exe";
+            proc.Start();
+            proc.WaitForExit();
         }
 
     }

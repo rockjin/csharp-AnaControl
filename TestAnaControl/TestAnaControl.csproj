@@ -227,6 +227,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="SnapShot.png" />
+    <None Include="SnapShot.ico" />
+    <EmbeddedResource Include="SnapShot.exe" />
     <None Include="DatangMobileLogo.png" />
     <Content Include="kchart.ico" />
     <Content Include="Microsoft.Data.ConnectionUI.Dialog.dll" />
