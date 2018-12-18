@@ -171,8 +171,8 @@ namespace TestAnaControl
                         //object[] keys = new object[2];
                         //keys[0] = row["product_name"];
                         //keys[1] = row["fail_code"];
-                        table2 = proc2.GetDataTable(string.Format("select * from FAIL_CODE_TABLE where product_name='{0}' and fail_code={1}",
-                            row["product_name"], row["fail_code"]));
+                        table2 = proc2.GetDataTable("select * from FAIL_CODE_TABLE where product_name=? and fail_code=?",
+                            row["product_name"], row["fail_code"]);
                         if (table2.Rows.Count == 0)
                         {
                             sqlCmd = "insert into FAIL_CODE_TABLE(PRODUCT_NAME,FAIL_CODE,DESCRIPTION,UPLOAD_STATE) "
@@ -180,7 +180,14 @@ namespace TestAnaControl
                             using (OleDbCommand odc = new OleDbCommand(sqlCmd, proc2.Conn))
                             {
                                 odc.Parameters.Add(new OleDbParameter("@p1", OleDbType.Char)).Value = row["product_name"];
-                                odc.Parameters.Add(new OleDbParameter("@p2", OleDbType.Integer)).Value = row["fail_code"];
+                                if (row["fail_code"] is System.DBNull)
+                                {
+                                    odc.Parameters.Add(new OleDbParameter("@p2", OleDbType.Integer)).Value = 0;
+                                }
+                                else
+                                {
+                                    odc.Parameters.Add(new OleDbParameter("@p2", OleDbType.Integer)).Value = row["fail_code"];
+                                }
                                 odc.Parameters.Add(new OleDbParameter("@p3", OleDbType.VarChar)).Value = row["description"];
                                 odc.Parameters.Add(new OleDbParameter("@p4", OleDbType.TinyInt)).Value = row["upload_state"];
                                 if (odc.ExecuteNonQuery() == 1)

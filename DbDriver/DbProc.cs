@@ -511,7 +511,7 @@ namespace DbDriver
             return dt.Rows[0]["DESCRIPTION"].ToString();
 
         }
-        public DataTable GetDataTable(string sql)
+        public DataTable GetDataTable(string sql,params object[] pars)
         {
             string sqlCmd;
             if (this.conn.Provider != "Microsoft.Jet.OLEDB.4.0"
@@ -519,12 +519,22 @@ namespace DbDriver
                 sqlCmd = sql.Replace('#', '\'');
             else
                 sqlCmd = sql;
-            OleDbDataAdapter oda;
-            oda = new OleDbDataAdapter(sqlCmd, conn);
-            DataTable dt = new DataTable("Unknow");
-            oda.Fill(dt);
-            oda.Dispose();
-            return dt;
+            using (OleDbCommand odc = new OleDbCommand(sql,conn))
+            {
+                int count = 1;
+                foreach(object obj in pars)
+                {
+                    odc.Parameters.Add(new OleDbParameter("@p" + count, obj));
+                    count++;
+                }
+                using (OleDbDataAdapter oda = new OleDbDataAdapter(odc))
+                {
+                    DataTable dt = new DataTable("Unknow");
+                    oda.Fill(dt);
+                    oda.Dispose();
+                    return dt;
+                }
+            }
         }
         public DataTable GetDataTable(string sql, out OleDbDataAdapter oda)
         {

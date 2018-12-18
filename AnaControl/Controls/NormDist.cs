@@ -36,6 +36,31 @@ namespace AnaControl.Controls
             get { return _db; }
             set { _db = value; }
         }
+
+        public double calc_std(double[] array, double mean)
+        {            
+            double a2 = 0;
+            for(int i=0;i<array.Length;i++)
+            {
+                a2 += (array[i] - mean) * (array[i] - mean) / array.Length;
+            }
+            return Math.Sqrt(a2);
+        }
+
+        public double calc_mean(double[] array)
+        {
+            double a1 = 0;
+            foreach (double d in array)
+            {
+                a1 += d / array.Length;
+            }
+            return a1;
+        }
+
+        public double[] calc_norm(double[] array,double mean,double std)
+        {
+
+        }
         public NormDist()
         {
             OnLog = this.LogFunc;
